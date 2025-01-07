@@ -21,14 +21,14 @@ r,,WP,d.10 Central heating pump,,,,4400,,,onoff,,,internal heating pump
 r,,extWP,d.11 external pump,,,,3F00,,,onoff,,,External heating pump
 ##r,,Storageloadpump,d.12 storage load pump,,,,9E00,,,percent0,,,tank load pump demand
 r,,CirPump,d.13 Circulation pump,,,,7B00,,,onoff,,,Hot water circulation pump (via external module)
-#r;wi,,,d.14
+r;wi,,PumpPowerDesired,d.14 Desired heating pump power,,,,A100,,,UCH,0=auto;1=53;2=60;3=70;4=85;5=100,%,PWM-Desired central heating pump power,,,
 r,,WPPWMPower,d.15 WP_PWMPower_DK,,,,"7300",,,UCH,,,actual PWM-Powerrate of electronic-pump
 r1,,DCRoomthermostat,d.16 room thermostat 24 V,,,,0E00,,,onoff,,,External controls heat demand (Clamp 3'-4')
 ##r,,Warmstart,d.21 Warmstart function,,,,5B00,,,onoff,,,Warmstart function : this parameter indicate if the function is enabled and allowed
 r,,HwcDemand,d.22 DHW demand,,,,5800,,,yesno,,,domestic hot water (tapping or tank contact) demand
 r,,HeatingDemand,d.23 Heating demand,,,,4000,,,yesno,,,Heating demand
 r,,StoragereleaseClock,d.25 DHW demand enabled,,,,7100,,,yesno,,,hot water release (tank storage) via eBus Control
-#r;wi,,,d.26
+r;wi,,OptionalRelais,d.26 Optional relay,,,,"B800",,,UCH,1=circulationpump;2=extheatingpump;3=storagechargingpump;4=fluegasflapextractorhood;5=externalgasvalve;6=externalerrormessage;7=solarpump;8=remotecontrol,,Function of optional relay
 r,,PrimaryCircuitFlowRate,d.29 PrimaryCircuitFlowRate_DK,,,,FB00,,,uin100,,,primary circuit water flow rate
 ##r,,Gasvalve,d.30 Gasvalve,,,,BB00,,,UCH,240=off;15=on,,Gasvalve activation signal
 ##r,,TargetFanSpeed,d.33 Target fan speed,,,,2400,,,UIN,,1/min,Fan speed setpoint
@@ -71,14 +71,14 @@ r;wi,,HwcPostrunTime,d.72 postrun time storage,,,,1104,,,UCH,-10,s,"Pump overrun
 ##r;wi,,WarmstartOffset,d.73 Warmstart offset,,,,1004,,,temp,,,Offset for warm start target value (combination boilers only)
 ##[SW>=413]r;wi,,APCLegioProtection,d.74 APC_LegioProtection,,,,9704,,,UCH,,,Legionella protection for actoSTORE
 r;wi,,StorageLoadTimeMax,d.75 Max load time storage,,,,1204,,,minutes0,,,Maximum charging time for a storage without own control
-#r;wi,,,d.76
+r,,CodingResistor,d.76 SD_CodingResistor_DK,,,,"9200",,,HEX:3,,,boiler identification resistor
 r;wi,,PartloadHwcKW,d.77 hot water partload,,,,0804,,,power,,,storage part load (storage charging capacity limit)
 r;wi,,FlowsetHwcMax,d.78 Max value flow temp storage,,,,0F04,,,temp,,,storage charging temperature limit (target flow temperature in storage mode)
 r,,HcHours,d.80 operating hours CH,,,,2800,,,hoursum2,,,central heating operation hours
 r,,HwcHours,d.81 Operating hours DHW,,,,2200,,,hoursum2,,,water heating operation hours
 r,,HcStarts,d.82 Burner starts heating,,,,2900,,,UIN,-100,,cycles in heating mode
 r,,HwcStarts,d.83 Burner starts DHW,,,,2300,,,UIN,-100,,Cycles in hot water operation
-#r;wi,,,d.84
+r;wi,,HoursTillService,d.84 Hours till service,,,,"AC00",,,hoursum2,,,Hours left before service is needed,,,
 ##r;wi,,AntiCondensValue,d.85 Minimal power to avoid condensation,,,,EC00,,,power,,,Minimal power to avoid condensation
 ##r;wi,,SpecialAdj,d.88 SpecialAdj,,,,EB00,,,UCH,,,"switching on threshold for recognition of water tapping0 = 1,5 l/min and no delay, 1 = 3,7 l/min and 2s delay"
 r,,EBusHeatcontrol,d.90 Digital control recognized,,,,"0004",,,yesno,,,Digital regulator status
