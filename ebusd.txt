@@ -1,0 +1,11 @@
+scanconfig: true
+loglevel_all: notice
+mqtttopic: ebusd1
+mqttint: /config/ebusd/mqtt-hassio.cfg
+mqttjson: true
+network_device: 192.168.1.142:9999
+mode: ens
+http: false
+configpath: /config/ebusd/ebusd-configuration/latest/en
+latency: 10
+accesslevel: "*"
