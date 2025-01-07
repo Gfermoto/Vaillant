@@ -6,6 +6,8 @@
 *ws,#service,,,,,B509,0E,,,,,,
 *[SW],scan,,,SW,,,,,,,,,
 # ##### dia level 1 #####,,,,,,,,,,,,,
+r,,Statenumber,Statenumber_DK,,,,"AB00",,,UCH,,,status number
+r,,StatusList,StatusList_DK,,,,"1101",,,HEX:10,,,Statustexte ergänzen
 r;wi,,PartloadHcKW,d.00 heating partload,,,,6C00,,,power,,,Heating part load
 r;wi,,WPPostrunTime,d.01 central heating overruntime,,,,6400,,,minutes0,,,water pump overrun time for heating mode
 ##r;wi,,BlockTimeHcMax,d.02 Max blocking time CH,,,,2100,,,minutes0,,,max. burner anti cycling period at 20°C Flow temperature setpoint
@@ -21,7 +23,7 @@ r,,extWP,d.11 external pump,,,,3F00,,,onoff,,,External heating pump
 ##r,,Storageloadpump,d.12 storage load pump,,,,9E00,,,percent0,,,tank load pump demand
 r,,CirPump,d.13 Circulation pump,,,,7B00,,,onoff,,,Hot water circulation pump (via external module)
 #r;wi,,,d.14
-#r,,,d.15
+r,,WPPWMPower,d.15 WP_PWMPower_DK,,,,"7300",,,UCH,,,actual PWM-Powerrate of electronic-pump
 r1,,DCRoomthermostat,d.16 room thermostat 24 V,,,,0E00,,,onoff,,,External controls heat demand (Clamp 3'-4')
 ##r,,Warmstart,d.21 Warmstart function,,,,5B00,,,onoff,,,Warmstart function : this parameter indicate if the function is enabled and allowed
 r,,HwcDemand,d.22 DHW demand,,,,5800,,,yesno,,,domestic hot water (tapping or tank contact) demand
@@ -80,8 +82,9 @@ r,,HwcStarts,d.83 Burner starts DHW,,,,2300,,,UIN,-100,,Cycles in hot water oper
 #r;wi,,,d.84
 ##r;wi,,AntiCondensValue,d.85 Minimal power to avoid condensation,,,,EC00,,,power,,,Minimal power to avoid condensation
 ##r;wi,,SpecialAdj,d.88 SpecialAdj,,,,EB00,,,UCH,,,"switching on threshold for recognition of water tapping0 = 1,5 l/min and no delay, 1 = 3,7 l/min and 2s delay"
-#r,,,d.90
-#r,,,d.91
+r,,EBusHeatcontrol,d.90 Digital control recognized,,,,"0004",,,yesno,,,Digital regulator status
+r,,dcfState,d.91 Status DCF 77,,,,"6900",,,dcfstate,,,DCF status
+
 r;ws,,DSNOffset,d.93 Device specific number,,,,3004,,,UCH,,,DSN aplliance variant setting
 #r;wi,,,d.94
 #r;wi,,,d.95
