@@ -6,7 +6,7 @@ __*(Что бы общаться с котлом требуются некото
 Так же рекомендую сразу приобрести преобразователь USR-ES1, это снизит задежки и джиттер, синхронизация и аудит будут стабильней. 
 - Нужно поднять демон EBUSD *(в Docker или как дополнение в HASSio)*  
 https://github.com/john30/ebusd  
-https://github.com/LukasGrebe/ha-addons  
+https://github.com/LukasGrebe/ha-addons *(файл настроек https://github.com/Gfermoto/Vaillant/blob/main/ebusd.txt )*  
 Для работы с кастомными файлами настроек, нужно сделать локальную копию конфигурационных фалов и прописать пути к ним.  
 https://github.com/john30/ebusd-configuration
 - Нужно поднять сервер MQTT *(в Docker или как дополнение в HASSio)*  
