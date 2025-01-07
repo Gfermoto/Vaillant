@@ -6,7 +6,6 @@
 *ws,#service,,,,,B509,0E,,,,,,
 *[SW],scan,,,SW,,,,,,,,,
 # ##### dia level 1 #####,,,,,,,,,,,,,
-r,,Statenumber,Statenumber_DK,,,,"AB00",,,UCH,,,status number
 r,,StatusList,StatusList_DK,,,,"1101",,,HEX:10,,,Statustexte ergänzen
 r;wi,,PartloadHcKW,d.00 heating partload,,,,6C00,,,power,,,Heating part load
 r;wi,,WPPostrunTime,d.01 central heating overruntime,,,,6400,,,minutes0,,,water pump overrun time for heating mode
