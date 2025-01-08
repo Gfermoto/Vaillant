@@ -1,18 +1,39 @@
-# Vaillant
-Vaillant eloBLOCK &amp; atmoTEC **(ebusd)**
+# Vaillant eloBLOCK & atmoTEC (ebusd)
 
-__*(Что бы общаться с котлом требуются некоторые приготовления)*__  
-- Для соединения с котлом и обмена через EBUS нужен преобразователь. Лучший вариант: https://adapter.ebusd.eu/v5-c6/index.en.html  
-Так же рекомендую сразу приобрести преобразователь USR-ES1, это снизит задежки и джиттер, синхронизация и аудит будут стабильней. 
-- Нужно поднять демон EBUSD *(в контейнере Docker или как дополнение в HASSio)*  
-https://github.com/john30/ebusd *([docker-compose файл](https://github.com/Gfermoto/Vaillant/blob/main/docker-compose.yml))*  
-https://github.com/LukasGrebe/ha-addons *([файл настроек](https://github.com/Gfermoto/Vaillant/blob/main/ebusd.txt))*  
-Для работы с кастомными файлами настроек, нужно сделать локальную копию конфигурационных фалов и прописать пути к ним.  
-https://github.com/john30/ebusd-configuration
-- Нужно поднять сервер MQTT *(в контейнере Docker или как дополнение в HASSio)*  
-Вероятно он у вас уже есть.
-- Дальнейшую работу выполнит MQTT-Discovery
+**Для взаимодействия с котлом требуются некоторые приготовления:**
 
+---
+
+### 1. Преобразователь для соединения с котлом
+Для обмена данными через EBUS необходим преобразователь. Рекомендуемый вариант:  
+[EBUSD Adapter v5-c6](https://adapter.ebusd.eu/v5-c6/index.en.html)  
+
+Также рекомендуется приобрести преобразователь **USR-ES1**, чтобы снизить задержки и джиттер, что улучшит стабильность синхронизации и аудита.
+
+---
+
+### 2. Установка демона EBUSD
+Демон EBUSD можно запустить в контейнере Docker или как дополнение в HASSio.  
+- Репозиторий EBUSD: [john30/ebusd](https://github.com/john30/ebusd)  
+- Пример `docker-compose.yml`: [docker-compose файл](https://github.com/Gfermoto/Vaillant/blob/main/docker-compose.yml)  
+- Репозиторий для HASSio: [LukasGrebe/ha-addons](https://github.com/LukasGrebe/ha-addons)  
+- Пример файла настроек: [ebusd.txt](https://github.com/Gfermoto/Vaillant/blob/main/ebusd.txt)  
+
+Для работы с кастомными файлами настроек необходимо сделать локальную копию конфигурационных файлов и указать пути к ним.  
+Репозиторий конфигураций: [john30/ebusd-configuration](https://github.com/john30/ebusd-configuration)
+
+---
+
+### 3. Сервер MQTT
+Сервер MQTT можно поднять в контейнере Docker или как дополнение в HASSio.  
+Вероятно, он у вас уже настроен.
+
+---
+
+### 4. MQTT-Discovery
+Дальнейшую работу выполнит MQTT-Discovery.
+
+---
 **В файле mqtt-hassio.cfg содержатся два изменения:**
 1) Закоментирован фильтр сообщений  
 `(filter-name)`
