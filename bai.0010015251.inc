@@ -22,20 +22,20 @@ r,,WP,d.10 Central heating pump,,,,"4400",,,onoff,,,internal heating pump
 r,,extWP,d.11 external pump,,,,"3F00",,,onoff,,,External heating pump
 r,,Storageloadpump,d.12 storage load pump,,,,"9E00",,,percent0,,,tank load pump demand
 r,,CirPump,d.13 Circulation pump,,,,"7B00",,,onoff,,,Hot water circulation pump (via external module)
-#r;wi,,,d.14
+r;wi,,PumpPowerDesired,d.14 Desired heating pump power,,,,A100,,,UCH,0=auto;1=53;2=60;3=70;4=85;5=100,%,PWM-Desired central heating pump power,,,
 r,,WPPWMPower,d.15 WP_PWMPower_DK,,,,"7300",,,UCH,,,actual PWM-Powerrate of electronic-pump
 r1,,DCRoomthermostat,d.16 room thermostat 24 V,,,,0E00,,,onoff,,,External controls heat demand (Clamp 3'-4')
-#r;wi,,,d.17
-#r;wi,,,d.18
+r;wi,,ReturnRegulation,d.17 Return control,,,,"B300",,,onoff,,,Activation of the return control,,,
+r;wi,,HcPumpMode,d.18 CH pump mode,,,,"B700",,,UCH,0=post run;1=permanent;2=winter,,Pump mode for central heating,,,
 #r;wi,,,d.19
-#r;wi,,,d.20
+r;wi,,HwcTempMax,d.20 Maximum DHW temperature,,,,"D900",,,temp,,,Max. Speichersollwert. Limits the maximum adjustment range of the potentiometer (right stop).,,,
 r,,Warmstart,d.21 Warmstart function,,,,5B00,,,onoff,,,Warmstart function : this parameter indicate if the function is enabled and allowed
 r,,HwcDemand,d.22 DHW demand,,,,"5800",,,yesno,,,domestic hot water (tapping or tank contact) demand
 r,,HeatingSwitch,d.23 operation mode,,,,"F203",,,onoff,,,Wintermode active
 r,,SourcePressure,d.24 AirPressure_DK,,,,"FF00",,,UIN,,Pa,value of airpressure-sensor
 r,,StoragereleaseClock,d.25 DHW demand enabled,,,,"4704",,,yesno,,,hot water release (tank storage) via eBus Control
-#r;wi,,,d.27
-#r;wi,,,d.28
+r;wi,,AccessoriesOne,d.27 Accessory relay 1,,,,"B900",,,UCH,1=circulationpump;2=extheatingpump;3=storagechargingpump;4=fluegasflapextractorhood;5=externalgasvalve;6=externalerrormessage;7=solarpump;8=remotecontrol,,Function of accessory relay 1,,,
+r;wi,,AccessoriesTwo,d.28 Accessory relay 2,,,,"BA00",,,UCH,1=circulationpump;2=extheatingpump;3=storagechargingpump;4=fluegasflapextractorhood;5=externalgasvalve;6=externalerrormessage;7=solarpump;8=remotecontrol,,Function of accessory relay 2,,,
 ##r,,PrimaryCircuitFlowrate,d.29 PrimaryCircuitFlowrate_DK,,,,"FB00",,,UIN,,l/h,value of flowrate
 ##r,,Gasvalve,d.30 Gasvalve,,,,"BB00",,,UCH,240=off;15=on,,Gasvalve activation signal
 ##r,,TargetFanSpeed,d.33 Target fan speed,,,,"2400",,,UIN,,1/min,Fan speed setpoint
@@ -47,10 +47,10 @@ r,,FlowTemp,d.40 TFT_DK,,,,"1800",,,tempsensor,,,flow temperature
 r,,ReturnTemp,d.41 Temp heating return,,,,"9800",,,tempmirrorsensor,,,return temperature
 r,,IonisationVoltageLevel,d.44 Dig. ionisation voltage,,,,"A400",,,SIN,10,,digital ionisation voltage> 80 no flame< 40 good flame
 r,,OutdoorstempSensor,d.47 Temp outside,,,,"7600",,,tempsensor,,,Outside temperature (uncorrected value)
-#r;wi,,,d.58
-#r;wi,,,d.60
-#r;wi,,,d.61
-#r;wi,,,d.64
+r;wi,,SolPostHeat,d.58 solar function,,,,"7304",,,UCH,,,special DHW functions0: solar function deactivated (default)1: solar function activated and DHW setpoint minimum 60°C2: solar function activated and DHW setpoint like combi standard (min 35°)3: DHW setpoint minimum 60°C (poti)
+r,,DeactivationsTemplimiter,d.60 Shutdowns by the temp limiter,,,,"2000",,,UCH,,,Number of shutdowns by the safety temperature limiter,,,
+r,,DeactivationsIFC,d.61 Ignition failures,,,,"1F00",,,UCH,,,Number of ignition failures (unsuccessful last-run or faulty flame signal),,,
+r,,averageIgnitiontime,d.64 Average ignition time,,,,"2D00",,,UCH,10,s,Average ignition time,,,
 r,,RemainingBoilerblocktime,d.67 Remaining burner block time,,,,"3800",,,minutes0,,,Remaining burner anti cycling time
 r,,CounterStartattempts1,d.68 ignition attempts 1,,,,6E00,,,temp0,,,unsuccessfull ignitions in the first attempt
 r,,CounterStartattempts2,d.69 ignition attempts 2,,,,6F00,,,temp0,,,unsuccessfull ignitions in the second attempt
@@ -61,7 +61,7 @@ r;wi,,WarmstartOffset,d.73 Warmstart offset,,,,1004,,,temp,,,Offset for warm sta
 [SW>=413]r;wi,,APCLegioProtection,d.74 APC_LegioProtection,,,,9704,,,UCH,,,Legionella protection for actoSTORE
 r;wi,,StorageLoadTimeMax,d.75 Max load time storage,,,,1204,,,minutes0,,,Maximum charging time for a storage without own control
 
-#r;wi,,,d.76
+r,,CodingResistor,d.76 SD_CodingResistor_DK,,,,"9200",,,HEX:3,,,boiler identification resistor
 r;wi,,PartloadHwcKW,d.77 hot water partload,,,,0804,,,power,,,storage part load (storage charging capacity limit)
 r;wi,,FlowsetHwcMax,d.78 Max value flow temp storage,,,,0F04,,,temp,,,storage charging temperature limit (target flow temperature in storage mode)
 r,,HcHours,d.80 operating hours CH,,,,2800,,,hoursum2,,,central heating operation hours
@@ -72,7 +72,7 @@ r;wi,,AntiCondensValue,d.85 Minimal power to avoid condensation,,,,EC00,,,power,
 r;wi,,SpecialAdj,d.88 SpecialAdj,,,,EB00,,,UCH,,,"switching on threshold for recognition of water tapping0 = 1,5 l/min and no delay, 1 = 3,7 l/min and 2s delay"
 r,,EBusHeatcontrol,d.90 Digital control recognized,,,,"0004",,,yesno,,,Digital regulator status
 r,,dcfState,d.91 Status DCF 77,,,,"6900",,,dcfstate,,,DCF status
-#r;wi,,,d.92
+[SW>=413]r,,APCComStatus,d.92 APC_ComStatus_DK,,,,"6200",,,UCH,,,actoSTORE communication status
 # ##### expert level #####,,,,,,,,,,,,,
 r,,SMGVCorrFactorLowOffset,e.04 SMGV_CorrFactorLow_Offset_DK,,,,"0F01",,,percents,,,CO2 offset-value low-load
 r,,SMGVCorrFactorHighOffset,e.05 SMGV_CorrFactorHigh_Offset_DK,,,,"1001",,,percents,,,CO2 offset-value high-load
@@ -177,18 +177,9 @@ r,,HwcSwitch,DHWSwitch,,,,"F303",,,onoff,,,DHW on/off
 r,,ProductionByte,ProductionByte,,,,"3E04",,,UCH,,,
 r,,SerialNumber,SerialNumber,,,,"3F04",,,HEX:8,,,serial number of AI
 # ##### dia level 2 #####,,,,,,,,,,,,,
-r;wi,,PumpPowerDesired,d.14 Desired heating pump power,,,,A100,,,UCH,0=auto;1=53;2=60;3=70;4=85;5=100,%,PWM-Desired central heating pump power,,,
-r;wi,,ReturnRegulation,d.17 Return regulation,,,,"0C04",,,onoff,,,heating flow/return regulation activation
-r;wi,,HcPumpMode,d.18 CH pump mode,,,,"4904",,,UCH,0=post run;1=permanent;2=winter,,"Pump mode: 0=post run, 1=continous, 2=Winter, 3=intermittend"
-r;wi,,HwcTempMax,d.20 Max value tanksetpoint,,,,"4304",,,temp,,,Adjustment of maximum tank setpoint range (maximum endposition of potmeter)
 r;wi,,OptionRelais,d.26 OptionRelais_DK,,,,"B800",,,UCH,1=circulationpump;2=extheatingpump;3=storagechargingpump;4=fluegasflapextractorhood;5=externalgasvalve;6=externalerrormessage;7=solarpump;8=remotecontrol,,Option relais function
-r;wi,,AccessoriesOne,d.27 Option relais 1,,,,"4B04",,,UCH,1=circulationpump;2=extheatingpump;3=storagechargingpump;4=fluegasflapextractorhood;5=externalgasvalve;6=externalerrormessage;7=solarpump;8=remotecontrol,,Accesory relay 1 function
-r;wi,,AccessoriesTwo,d.28 Option relais 2,,,,"4C04",,,UCH,1=circulationpump;2=extheatingpump;3=storagechargingpump;4=fluegasflapextractorhood;5=externalgasvalve;6=externalerrormessage;7=solarpump;8=remotecontrol,,Accesory relay 2 function
 r;wi,,FanSpeedOffsetMin,d.50 MinFanSpeedOffset,,,,"2404",,,SIN,,1/min,Offset for minimum fan speed
 r;wi,,FanSpeedOffsetMax,d.51 MaxFanSpeedOffset,,,,"2504",,,SIN,,1/min,Offset for maximum fan speed
-r,,DeactivationsTemplimiter,d.60 Number STL cut off,,,,"2000",,,UCH,,,Number of safety temperature limiter cut offs
-r,,DeactivationsIFC,d.61 Number ignition device cut off,,,,"1F00",,,UCH,,,"number of lock outs (unsuccessfull ignitons in the last attempt, flame failure)"
-r,,averageIgnitiontime,d.64 average ignition time,,,,"2D00",,,UCH,10,s,average ignition time
 r,,maxIgnitiontime,d.65 Max ignition time,,,,"2C00",,,UCH,10,s,maximum ignition time
 r;wi,,HoursTillService,d.84 Hours till next service,,,,"2004",,,hoursum2,,,Maintenance indicator:Number of hours until the next maintenance
 r;wi,,ServiceMode,d.86 ServiceMode_DK,,,,"CB00",,,onoff,,,Counter-activation for predictive maintenance
