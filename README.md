@@ -52,11 +52,11 @@
 
 ### Файл `08.bai.csv`
 Добавлены строки для котлов Vaillant:
-- Для **eloBLOCK**:  
+- Для **eloBLOCK SW0109, HW7503 (0010023658)**:  
   ```plaintext
   [PROD='0010023658']!load,bai.0010023658.inc,,,
   ```  
-- Для **atmoTEC**:  
+- Для **atmoTEC SW0407, HW0903 (0010015251)**:  
   ```plaintext
   [PROD='0010015251']!load,bai.0010015251.inc,,,
   ```  
