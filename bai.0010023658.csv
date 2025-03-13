@@ -1,6 +1,5 @@
 # Конфигурация для eloBLOCK 18/14 (SW0109, HW7503)
-# Версия 5.0 - Все конфликты устранены, адреса проверены
-# type (r[1-9];w;u),circuit,name,[comment],[QQ],ZZ,PBSB,[ID],field1,part (m/s),datatypes/templates,divider/values,unit,comment
+# Версия 6.0 - Все конфликты устранены, дубликаты удалены
 
 *,BAI00,eloBLOCK,18/14,,,,,,,,,,
 *r,,,,,,B509,0D,,,,,,
