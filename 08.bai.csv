@@ -30,4 +30,4 @@
 [HW=7401]!load,bai.308523.inc,,,
 [HW=4702]!load,bai.0010008045.inc,,,
 !load,bai.308523.inc,,,
-!include,hcmode.inc,,,
+#!include,hcmode.inc,,,
