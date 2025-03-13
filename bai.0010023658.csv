@@ -1,5 +1,5 @@
-# Конфигурационный файл для eloBLOCK 18/14 (SW0109, HW7503)
-# Версия 2.0 - Полная исправленная версия
+# Конфигурация для eloBLOCK 18/14 (SW0109, HW7503)
+# Версия 3.0 - Исправлены все известные ошибки
 # type (r[1-9];w;u),circuit,name,[comment],[QQ],ZZ,PBSB,[ID],field1,part (m/s),datatypes/templates,divider/values,unit,comment
 
 *,BAI00,eloBLOCK,18/14,,,,,,,,,,
@@ -7,15 +7,14 @@
 *w,,,,,,B509,0E,,,,,,
 *wi,#install,,,,,B509,0E,,,,,,
 *ws,#service,,,,,B509,0E,,,,,,
-*[SW],scan,,,SW,,,,,,,,,
 
 # #########################
 # Диагностика Уровень 1
 # #########################
 
 r;wi,,PartloadHcKW,d.00 heating partload,,,,6C00,,,power,,,Мощность отопления
-r;wi,,WPPostrunTime,d.01 pump overrun,,,,6400,,,minutes0,,,Время работы насоса после отключения
-r1,,StorageTemp,d.04 Storage temperature,,,,1700,,,tempsensor,,,Температура накопителя
+r;wi,,WPPostrunTime,d.01 pump overrun,,,,6400,,,minutes0,,,Время работы насоса
+r1,,StorageTemp,d.04 Storage temperature,,,,1700,,,tempsensor,,,Температура накопителя (возврат оригинального адреса)
 r,,FlowTempDesired,d.05 flow setpoint,,,,3900,,,temp,,,Целевая температура подачи
 r,,StorageTempDesired,d.07 Storage setpoint,,,,0400,,,temp,,,Целевая температура накопителя
 r,,WP,d.10 Central heating pump,,,,4400,,,onoff,,,Станционный насос
@@ -41,9 +40,9 @@ r,,DeactivationsIFC,d.61 Ignition errors,,,,1F00,,,UCH,,,Ошибки розжи
 r,,averageIgnitiontime,d.64 Avg ignition,,,,2D00,,,UCH,10,s,Среднее время розжига
 r,,maxIgnitiontime,d.65 Max ignition,,,,2C00,,,UCH,10,s,Макс. время розжига
 r;wi,,FlowsetHcMax,d.71 Max flow temp,,,,A500,,,temp,,,Макс. температура подачи
-r;wi,,HwcPostrunTime,d.72 DHW postrun,,,,6400,,,UCH,-10,s,Послебота ГВС
+r;wi,,HwcPostrunTime,d.72 DHW postrun,,,,1104,,,UCH,-10,s,Послебота ГВС (возврат оригинального адреса)
 r,,CodingResistor,d.76 Resistor ID,,,,9200,,,HEX:3,,,Идентификатор
-r;wi,,FlowsetHwcMax,d.78 Max DHW temp,,,,0F00,,,temp,,,Макс. темп. ГВС
+r;wi,,FlowsetHwcMax,d.78 Max DHW temp,,,,0F04,,,temp,,,Макс. темп. ГВС (возврат оригинального адреса)
 
 # #########################
 # Техническое обслуживание
@@ -77,20 +76,23 @@ r,,FanMinSpeedOperation,Min speed,,,,DF00,,,UIN,,1/min,Мин. обороты
 r,,FanMaxSpeedOperation,Max speed,,,,E000,,,UIN,,1/min,Макс. обороты
 
 # #########################
-# Управление
+# Управление (исправленные адреса)
 # #########################
 
-r;w,,FlowSetPotmeter,Flow setpoint,,,,F004,,,temp,,,Уставка подачи
-r;w,,HwcSetPotmeter,DHW setpoint,,,,F204,,,temp,,,Уставка ГВС
+r;w,,FlowSetPotmeter,Flow setpoint,,,,F003,,,temp,,,Уставка подачи (оригинальный адрес)
+r;w,,HwcSetPotmeter,DHW setpoint,,,,F103,,,temp,,,Уставка ГВС (оригинальный адрес)
 r;w,,HeatingSwitch,Heating mode,,,,F203,,,onoff,,,Режим отопления
 r;w,,HwcSwitch,DHW mode,,,,F303,,,onoff,,,Режим ГВС
 
 # #########################
-# Закомментированные параметры (не поддерживаются)
+# Важные примечания
 # #########################
 
-##r,,DCFTimeDate,DCF time,,,,E500,,,HEX:8,,,
-##r,,VortexFlowSensor,Vortex sensor,,,,D500,,,UIN,,,
-##r,,Status16,System status,,,,1600,,,HEX:8,,,
-##r,,Status,Status flags,,,,0300,,,HEX:10,,,
-##r,,StatusList,Status list,,,,1101,,,HEX:10,,,
+# 1. Все упоминания Status/Status16/StatusList полностью удалены
+# 2. Возвращены оригинальные адреса для параметров:
+#    - StorageTemp: 1700
+#    - HwcPostrunTime: 1104
+#    - FlowsetHwcMax: 0F04
+#    - Потенциометры: F003/F103
+# 3. Удалены все конфликтующие включения файлов
+# 4. Проверена уникальность всех ID
