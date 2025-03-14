@@ -1,84 +1,74 @@
-# Конфигурация для eloBLOCK 18/14 (SW0109, HW7503)
-# Версия 7.0 - Все конфликты устранены, параметры Status удалены
-
-*,BAI00,eloBLOCK,18/14,,,,,,,,,,
+# type (r[1-9];w;u),circuit,name,[comment],[QQ],ZZ,PBSB,[ID],field1,part (m/s),datatypes/templates,divider/values,unit,comment
+#,BAI00,eloBLOCK,18/14,,,,,,,,,,
 *r,,,,,,B509,0D,,,,,,
 *w,,,,,,B509,0E,,,,,,
 *wi,#install,,,,,B509,0E,,,,,,
 *ws,#service,,,,,B509,0E,,,,,,
+*[SW],scan,,,SW,,,,,,,,,
 
-# #########################
-# Диагностика Уровень 1
-# #########################
+# ##### Уровень 1 диагностики #####
+r;wi,,PartloadHcKW,d.00 Нагрузка отопления,,,,6C00,,,power,,,Мощность частичной нагрузки отопления
+r;wi,,WPPostrunTime,d.01 Время работы насоса после отключения,,,,6400,,,minutes0,,,Время работы насоса после отключения отопления
+r1,,StorageTemp,d.04 Температура накопителя,,,,1700,,,tempsensor,,,Текущая температура накопителя
+r,,FlowTempDesired,d.05 Уставка температуры подачи,,,,3900,,,temp,,,Целевая температура подачи/обратки
+r,,StorageTempDesired,d.07 Уставка температуры накопителя,,,,0400,,,temp,,,Целевая температура накопителя
+r,,WP,d.10 Насос отопления,,,,4400,,,onoff,,,Внутренний насос отопления
+r,,extWP,d.11 Внешний насос,,,,3F00,,,onoff,,,Внешний насос отопления
+r,,CirPump,d.13 Циркуляционный насос ГВС,,,,7B00,,,onoff,,,Насос рециркуляции ГВС
+r;wi,,PumpPowerDesired,d.14 Мощность насоса,,,,A100,,,UCH,0=авто;1=53;2=60;3=70;4=85;5=100,%,Желаемая мощность насоса
+r,,WPPWMPower,d.15 Текущая мощность насоса,,,,7300,,,UCH,,,Фактическая ШИМ-мощность насоса
+r1,,DCRoomthermostat,d.16 Комнатный термостат 24В,,,,0E00,,,onoff,,,Внешний запрос отопления (клеммы 3'-4')
+r,,HwcDemand,d.22 Запрос ГВС,,,,5800,,,yesno,,,Запрос горячего водоснабжения
+r,,HeatingDemand,d.23 Запрос отопления,,,,4000,,,yesno,,,Запрос отопления
+r,,StoragereleaseClock,d.25 Разрешение ГВС,,,,7100,,,yesno,,,Управление ГВС через eBus
+r;wi,,OptionalRelais,d.26 Дополнительное реле,,,,B800,,,UCH,1=насос рециркуляции;2=внешний насос;3=насос загрузки накопителя,,Функция доп. реле
 
-r;wi,,PartloadHcKW,d.00 heating partload,,,,6C00,,,power,,,Мощность отопления
-r;wi,,WPPostrunTime,d.01 pump overrun,,,,6400,,,minutes0,,,Время работы насоса
-r1,,StorageTemp,d.04 Storage temperature,,,,1700,,,tempsensor,,,Температура накопителя
-r,,FlowTempDesired,d.05 flow setpoint,,,,3900,,,temp,,,Целевая температура подачи
-r,,StorageTempDesired,d.07 Storage setpoint,,,,0400,,,temp,,,Целевая температура накопителя
-r,,WP,d.10 Central heating pump,,,,4400,,,onoff,,,Станционный насос
-r,,extWP,d.11 external pump,,,,3F00,,,onoff,,,Внешний насос
-r,,CirPump,d.13 Circulation pump,,,,7B00,,,onoff,,,Циркуляционный насос ГВС
-r;wi,,PumpPowerDesired,d.14 Pump power,,,,A100,,,UCH,0=auto;1=53;2=60;3=70;4=85;5=100,%,Регулировка насоса
-r,,WPPWMPower,d.15 Actual pump power,,,,7300,,,UCH,,,Фактическая мощность насоса
-r1,,DCRoomthermostat,d.16 room thermostat,,,,0E00,,,onoff,,,Термостат 24В
-r,,HwcDemand,d.22 DHW demand,,,,5800,,,yesno,,,Запрос ГВС
-r,,HeatingDemand,d.23 Heating demand,,,,4000,,,yesno,,,Запрос отопления
-r,,StoragereleaseClock,d.25 DHW release,,,,7100,,,yesno,,,Активация ГВС через eBus
-r;wi,,OptionalRelais,d.26 Optional relay,,,,B800,,,UCH,1=circ;2=ext pump;3=tank pump,,Функция реле
+# ##### Уровень 2 диагностики #####
+r;wi,,HcPumpMode,d.18 Режим насоса отопления,,,,B700,,,UCH,0=последействие;1=постоянно;2=зимний,,Режим работы насоса
+r;wi,,SecondPumpMode,d.19 Режим двухскоростного насоса,,,,A000,,,UCH,,,Режим двухскоростного насоса
+r;wi,,HwcTempMax,d.20 Макс. температура ГВС,,,,D900,,,temp,,,Максимальная уставка температуры ГВС
+r,,DeactivationsTemplimiter,d.60 Срабатывания ограничителя температуры,,,,2000,,,UCH,,,Количество отключений по ограничителю
+r,,DeactivationsIFC,d.61 Ошибки розжига,,,,1F00,,,UCH,,,Количество неудачных розжигов
+r,,averageIgnitiontime,d.64 Среднее время розжига,,,,2D00,,,UCH,10,s,Среднее время розжига
+r,,maxIgnitiontime,d.65 Макс. время розжига,,,,2C00,,,UCH,10,s,Максимальное время розжига
+r;wi,,FlowsetHcMax,d.71 Макс. температура подачи,,,,A500,,,temp,,,Максимальная уставка температуры подачи
+r;wi,,HwcPostrunTime,d.72 Время работы насоса после ГВС,,,,6400,,,UCH,-10,s,Время работы насоса после отключения ГВС
+r,,CodingResistor,d.76 Кодировочный резистор,,,,9200,,,HEX:3,,,Идентификационный резистор
+r;wi,,FlowsetHwcMax,d.78 Макс. темп. загрузки накопителя,,,,0F00,,,temp,,,Макс. температура при загрузке накопителя
 
-# #########################
-# Диагностика Уровень 2
-# #########################
+# ##### Техническое обслуживание #####
+r,,TempGradientFailure,d.60 Ошибки градиента температуры,,,,1100,,,temp0,,,Превышение градиента температуры
+r,,TempDiffBlock,d.61 Блокировка по разнице температур,,,,1200,,,temp0,,,Блокировка при неверной разнице температур
+r,,TempDiffFailure,d.62 Ошибки разницы температур,,,,1300,,,temp0,,,Критическая разница температур
+r,,PumpHours,d.80 Часы работы насоса,,,,1400,,,hoursum2,,,Наработка насоса
+r,,HcPumpStarts,d.81 Пуски насоса отопления,,,,1500,,,cntstarts2,,,Количество пусков насоса
+r,,ValveStarts,d.82 Срабатывания клапана,,,,1A00,,,cntstarts2,,,Количество переключений клапана
+r,,FanHours,d.83 Часы работы вентилятора,,,,1B00,,,hoursum2,,,Наработка вентилятора
+r,,FanStarts,d.84 Пуски вентилятора,,,,1C00,,,cntstarts2,,,Количество пусков вентилятора
+r,,FlowTempMax,d.85 Макс. температура подачи,,,,3700,,,temp,,,Максимальная зафиксированная температура
+r,,ReturnTempMax,d.86 Макс. температура обратки,,,,BE00,,,temp,,,Максимальная температура обратки
 
-r;wi,,HcPumpMode,d.18 CH pump mode,,,,B700,,,UCH,0=post;1=perm;2=winter,,Режим насоса
-r;wi,,SecondPumpMode,d.19 2-speed pump,,,,A000,,,UCH,,,Режим двухскоростного насоса
-r;wi,,HwcTempMax,d.20 Max tank temp,,,,D900,,,temp,,,Макс. температура ГВС
-r,,DeactivationsTemplimiter,d.60 STL errors,,,,2000,,,UCH,,,Ошибки ограничителя
-r,,DeactivationsIFC,d.61 Ignition errors,,,,1F00,,,UCH,,,Ошибки розжига
-r,,averageIgnitiontime,d.64 Avg ignition,,,,2D00,,,UCH,10,s,Среднее время розжига
-r,,maxIgnitiontime,d.65 Max ignition,,,,2C00,,,UCH,10,s,Макс. время розжига
-r;wi,,FlowsetHcMax,d.71 Max flow temp,,,,A500,,,temp,,,Макс. температура подачи
-r;wi,,HwcPostrunTime,d.72 DHW postrun,,,,6400,,,UCH,-10,s,Послебота ГВС
-r,,CodingResistor,d.76 Resistor ID,,,,9200,,,HEX:3,,,Идентификатор
-r;wi,,FlowsetHwcMax,d.78 Max DHW temp,,,,0F00,,,temp,,,Макс. темп. ГВС
+# ##### Экспертный уровень #####
+r,,WaterPressure,Давление воды,,,,0200,,,presssensor,,,Давление в системе
+r,,Flame,Пламя,,,,0500,,,UCH,240=нет;15=есть,,Признак наличия пламени
+r,,ModulationTempDesired,Уставка модуляции,,,,2E00,,,SIN,10,%,Текущая уставка модуляции
+r,,GasvalveASICFeedback,Состояние газового клапана,,,,4700,,,UCH,240=закрыт;15=открыт,,Обратная связь клапана
+r,,Templimiter,Ограничитель температуры,,,,7700,,,UCH,240=норма;15=срабатывание,,Состояние ограничителя
+r,,DSN,Серийный номер,,,,9A00,,,UIN,,,Серийный номер устройства
+r,,TargetFanSpeedOutput,Обороты вентилятора,,,,9F00,,,UIN,,1/min,Текущие обороты вентилятора
 
-# #########################
-# Техническое обслуживание
-# #########################
+# ##### Управление #####
+r;w,,FlowSetPotmeter,Ручная уставка подачи,,,,F003,,,temp,,,Ручная установка температуры подачи
+r;w,,HwcSetPotmeter,Ручная уставка ГВС,,,,F103,,,temp,,,Ручная установка температуры ГВС
+r;w,,HeatingSwitch,Режим отопления,,,,F203,,,onoff,,,Активация зимнего режима
+r;w,,HwcSwitch,Режим ГВС,,,,F303,,,onoff,,,Активация ГВС
 
-r,,TempGradientFailure,Temp gradient,,,,1100,,,temp0,,,Ошибки градиента
-r,,TempDiffBlock,Temp diff block,,,,1200,,,temp0,,,Блокировка по разнице
-r,,TempDiffFailure,Temp diff failure,,,,1300,,,temp0,,,Ошибки разницы
-r,,PumpHours,Pump hours,,,,1400,,,hoursum2,,,Часы насоса
-r,,HcPumpStarts,Pump starts,,,,1500,,,cntstarts2,,,Пуски насоса
-r,,ValveStarts,Valve starts,,,,1A00,,,cntstarts2,,,Срабатывания клапана
-r,,FanHours,Fan hours,,,,1B00,,,hoursum2,,,Часы вентилятора
-r,,FanStarts,Fan starts,,,,1C00,,,cntstarts2,,,Пуски вентилятора
-r,,FlowTempMax,Max flow temp,,,,3700,,,temp,,,Макс. темп. подачи
-r,,ReturnTempMax,Max return temp,,,,BE00,,,temp,,,Макс. темп. обратки
+# ##### Системные параметры #####
+r;ws,,SetFactoryValues,Сброс настроек,,,,6804,,,yesno,,,Восстановление заводских установок
+r,,ProductionByte,Производственные данные,,,,3E04,,,UCH,,,Служебная информация
 
-# #########################
-# Экспертный уровень
-# #########################
-
-r,,WaterPressure,Water pressure,,,,0200,,,presssensor,,,Давление
-r,,Flame,Flame status,,,,0500,,,UCH,240=off;15=on,,Пламя
-r,,ModulationTempDesired,Modulation,,,,2E00,,,SIN,10,%,Модуляция
-r,,FlameSensingASIC,Flame sensor,,,,2F00,,,UIN,,,Датчик пламени
-r,,EbusSourceOn,Ebus power,,,,3400,,,onoff,,,Питание eBus
-r,,GasvalveASICFeedback,Gasvalve,,,,4700,,,UCH,240=off;15=on,,Газовый клапан
-r,,Templimiter,Temp limiter,,,,7700,,,UCH,240=off;15=on,,Ограничитель
-r,,DSN,Serial number,,,,9A00,,,UIN,,,Серийный номер
-r,,TargetFanSpeedOutput,Fan RPM,,,,9F00,,,UIN,,1/min,Обороты вент.
-r,,FanMinSpeedOperation,Min speed,,,,DF00,,,UIN,,1/min,Мин. обороты
-r,,FanMaxSpeedOperation,Max speed,,,,E000,,,UIN,,1/min,Макс. обороты
-
-# #########################
-# Управление (исправленные адреса)
-# #########################
-
-r;w,,FlowSetPotmeter,Flow setpoint,,,,F004,,,temp,,,Уставка подачи
-r;w,,HwcSetPotmeter,DHW setpoint,,,,F204,,,temp,,,Уставка ГВС
-r;w,,HeatingSwitch,Heating mode,,,,F203,,,onoff,,,Режим отопления
-r;w,,HwcSwitch,DHW mode,,,,F303,,,onoff,,,Режим ГВС
+# ##### Удаленные/неподдерживаемые параметры #####
+##r,,StatusList...                // Удалены статусы
+##r,,EBusHeatcontrol...           // Удалено eBus управление
+##r,,dcfState...                  // Удален DCF-модуль
+##!include,errors.inc             // Удалено внешнее подключение
