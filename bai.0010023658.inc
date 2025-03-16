@@ -6,7 +6,7 @@
 *ws,#service,,,,,B509,0E,,,,,,
 *[SW],scan,,,SW,,,,,,,,,
 # ##### dia level 1 #####,,,,,,,,,,,,,
-r,,StatusList,StatusList_DK,,,,"1101",,,HEX:10,,,Statustexte ergänzen
+r,,StatusList,StatusList_DK,,,,B509,,,HEX:6,,,Statustexte ergänzen
 r;wi,,PartloadHcKW,d.00 heating partload,,,,6C00,,,power,,,Heating part load
 r;wi,,WPPostrunTime,d.01 central heating overruntime,,,,6400,,,minutes0,,,water pump overrun time for heating mode
 ##r;wi,,BlockTimeHcMax,d.02 Max blocking time CH,,,,2100,,,minutes0,,,max. burner anti cycling period at 20°C Flow temperature setpoint
