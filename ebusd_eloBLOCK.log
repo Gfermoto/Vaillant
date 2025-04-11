@@ -1,0 +1,17 @@
+[update error] unable to parse poll-read bai DCFTimeDate from 3108b509030de500 / 071b12151c030400: ERR: invalid position
+[update error] unable to parse poll-read bai EBusHeatcontrol from 3108b509030d0004 / 00: ERR: invalid position
+[update error] unable to parse poll-read bai externalFlowTempDesired from 3108b509030d2500 / 00: ERR: invalid position
+[update error] unable to parse poll-read bai FanSpeedOffsetMin from 3108b509030d2404 / 00: ERR: invalid position
+[update error] unable to parse poll-read bai FlowsetHwcMax from 3108b509030d0f04 / 00: ERR: invalid position
+[update error] unable to parse poll-read bai FlowSetPotmeter from 3108b509030df003 / 00: ERR: invalid position
+[update error] unable to parse poll-read bai GasvalveUCFeedback from 3108b509030d4800 / 00: ERR: invalid position
+[update error] unable to parse poll-read bai HwcPostrunTime from 3108b509030d1104 / 00: ERR: invalid position
+[update error] unable to parse poll-read bai HwcSetPotmeter from 3108b509030df103 / 00: ERR: invalid position
+[update error] unable to parse poll-read bai PartloadHwcKW from 3108b509030d0804 / 00: ERR: invalid position
+[update error] unable to parse poll-read bai Status16 from 3108b5040116 / 00: ERR: invalid position
+[update error] unable to parse poll-read bai Status from 3108b5110103 / 00: ERR: invalid position
+[update error] unable to parse poll-read bai StatusList from 3108b509030d1101 / 00: ERR: invalid position
+[update error] unable to parse poll-read bai StorageLoadTimeMax from 3108b509030d1204 / 00: ERR: invalid position
+[update error] unable to parse poll-read bai VortexFlowSensor from 3108b509030dd500 / 00: ERR: invalid position
+
+

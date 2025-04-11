@@ -1,0 +1,80 @@
+substitutions:
+  hostname: "vaillant_power"
+  devicename: vaillant_power
+
+esphome:
+  name: ${devicename}
+
+esp8266:
+  board: esp01_1m
+
+logger:
+
+web_server:
+  port: 80
+
+api:
+
+ota:
+  - platform: esphome
+    password: "your_secure_password"
+
+wifi:
+  ssid: "your_secure_ssid"
+  password: "your_secure_password"
+
+  ap:
+    ssid: "Bird Feeder Fallback Hotspot"
+    password: "your_secure_password"
+
+captive_portal:
+
+switch:
+  - platform: gpio
+    pin: GPIO0
+    name: "${devicename} switch"
+    inverted: true
+
+  - platform: restart
+    name: ${devicename} restart
+
+sensor:
+  - platform: wifi_signal
+    name: ${devicename} wifi signal
+    update_interval: 60s
+
+  - platform: uptime
+    name: ${devicename} Uptime in Days
+    id: uptime_sensor_days
+    update_interval: 60s
+    on_raw_value:
+      then:
+        - text_sensor.template.publish:
+            id: uptime_human
+            state: !lambda |-
+              int seconds = round(id(uptime_sensor_days).raw_state);
+              return (
+                (seconds / 86400 ? String(seconds / 86400) + "d " : "") +
+                (seconds % 86400 / 3600 ? String(seconds % 86400 / 3600) + "h " : "") +
+                (seconds % 3600 / 60 ? String(seconds % 3600 / 60) + "m " : "") +
+                (String(seconds % 60) + "s")
+              ).c_str();
+
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+
+text_sensor:
+  - platform: version
+    name: ${devicename} Version
+
+  - platform: wifi_info
+    ip_address:
+      name: ${devicename} IP
+    bssid:
+      name: ${devicename} BSSID
+
+  - platform: template
+    name: Uptime Human Readable
+    id: uptime_human
+    icon: mdi:clock-start

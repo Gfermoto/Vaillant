@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vaillant eloBLOCK & atmoTEC (ebusd)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        blockquote {
+            margin: 0;
+            padding: 10px 20px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Vaillant eloBLOCK & atmoTEC (ebusd)</h1>
+
+<p><strong>Для взаимодействия с котлом требуются некоторые приготовления:</strong></p>
+
+<hr>
+
+<h2>1. Преобразователь для соединения с котлом</h2>
+<p>Для обмена данными через EBUS необходим преобразователь. Рекомендуемый вариант:  
+<a href="https://adapter.ebusd.eu/v5-c6/index.en.html" target="_blank">EBUSD Adapter v5-c6</a></p>
+<p>Также рекомендуется приобрести преобразователь <strong>USR-ES1</strong>, чтобы снизить задержки и джиттер, что улучшит стабильность синхронизации и аудита.</p>
+
+<hr>
+
+<h2>2. Установка демона EBUSD</h2>
+<p>Демон EBUSD можно запустить в контейнере Docker или как дополнение в HASSio.</p>
+<ul>
+    <li>Репозиторий EBUSD: <a href="https://github.com/john30/ebusd" target="_blank">john30/ebusd</a></li>
+    <li>Пример <code>docker-compose.yml</code>: <a href="https://github.com/Gfermoto/Vaillant/blob/main/docker-compose.yml" target="_blank">docker-compose файл</a></li>
+    <li>Репозиторий для HASSio: <a href="https://github.com/LukasGrebe/ha-addons" target="_blank">LukasGrebe/ha-addons</a></li>
+    <li>Пример файла настроек: <a href="https://github.com/Gfermoto/Vaillant/blob/main/ebusd.txt" target="_blank">ebusd.txt</a></li>
+</ul>
+<p>Для работы с кастомными файлами настроек необходимо сделать локальную копию конфигурационных файлов и указать пути к ним.  
+Репозиторий конфигураций: <a href="https://github.com/john30/ebusd-configuration" target="_blank">john30/ebusd-configuration</a></p>
+
+<hr>
+
+<h2>3. Сервер MQTT</h2>
+<p>Сервер MQTT можно поднять в контейнере Docker или как дополнение в HASSio.  
+Вероятно, он у вас уже настроен.</p>
+
+<hr>
+
+<h2>4. MQTT-Discovery</h2>
+<p>Дальнейшую работу выполнит MQTT-Discovery.</p>
+
+<hr>
+
+<h2>Изменения в конфигурационных файлах</h2>
+
+<h3>Файл <code>mqtt-hassio.cfg</code></h3>
+<ol>
+    <li><strong>Закомментирован фильтр сообщений:</strong>  
+        <pre><code>(filter-name)</code></pre>
+    </li>
+    <li><strong>Добавлено отслеживание записываемых сообщений:</strong>  
+        <pre><code>(filter-direction = r|u|^w)</code></pre>
+        <em>(Это позволяет получать больше информации)</em>
+    </li>
+</ol>
+
+<hr>
+
+<h3>Файл <code>08.bai.csv</code></h3>
+<p>Добавлены строки для котлов Vaillant:</p>
+<ul>
+    <li>Для <strong>eloBLOCK</strong>:  
+        <pre><code>[PROD='0010023658']!load,bai.0010023658.inc,,,</code></pre>
+    </li>
+    <li>Для <strong>atmoTEC</strong>:  
+        <pre><code>[PROD='0010015251']!load,bai.0010015251.inc,,,</code></pre>
+    </li>
+</ul>
+
+<hr>
+
+<h3>Файл <code>bai.0010023658.inc</code></h3>
+<p>Создан путем слияния файлов <code>bai.0010008045.inc</code> и <code>bai.308523.inc</code>.</p>
+<ul>
+    <li>Закомментированы строки <code>## d.xx</code>, относящиеся к функциям, недоступным в Vaillant eloBLOCK.</li>
+    <li>Добавлены закомментированные строки <code># d.xx</code>, относящиеся к функциям, присутствующим в руководстве, но неизвестным.</li>
+    <li>Некоторые функции заимствованы из других файлов.</li>
+</ul>
+<p>Полученное описание требует проверки, корректировки и дополнения.  
+Нерешенные проблемы: <a href="https://github.com/Gfermoto/Vaillant/blob/main/ebusd_eloBLOCK.log" target="_blank">ebusd_eloBLOCK.log</a>  
+<strong>(Буду признателен за помощь)</strong></p>
+
+<hr>
+
+<h3>Файл <code>bai.0010015251.inc</code></h3>
+<p>Создан путем слияния файлов <code>bai.0010004121.inc</code> и <code>bai.308523.inc</code>.</p>
+<ul>
+    <li>Закомментированы строки <code>## d.xx</code>, относящиеся к функциям, недоступным в Vaillant atmoTEC.</li>
+    <li>Добавлены закомментированные строки <code># d.xx</code>, относящиеся к функциям, присутствующим в руководстве, но неизвестным.</li>
+    <li>Некоторые функции заимствованы из других файлов.</li>
+</ul>
+<p>Полученное описание требует проверки, корректировки и дополнения.  
+Нерешенные проблемы: <a href="https://github.com/Gfermoto/Vaillant/blob/main/ebusd_atmoTEC.log" target="_blank">ebusd_atmoTEC.log</a>  
+<strong>(Буду признателен за помощь)</strong></p>
+
+<hr>
+
+<h3>Конфигурационный файл <code>bai.308523.inc</code></h3>
+<p>Этот файл используется по умолчанию, если котел не распознан <em>(содержит общие сообщения, но не все)</em>.  
+Второй конфигурационный файл выбирался на основе схожести аппаратных версий плат управления <strong>(HW)</strong>.  
+Закомментированные не поддерживаемые функции <code>d.xx</code> сопряжены с версией программного обеспечения платы <strong>(SW)</strong>.</p>
+
+<hr>
+
+<h2>Особенности работы с электрическими котлами (eloBLOCK)</h2>
+<p>Котел имеет сухой контакт для ограничения мощности, если это настроено. Необходимо настроить ограничение по всем фазам или на какой-то конкретной, а также уровень ограничения. Это число будет вычитаться из максимального настроенного уровня.</p>
+<p>Однако при настройке ограничения по всем фазам для котла с максимальной мощностью 18 кВт можно настроить ограничение только кратное 6, то есть 6 кВт, 12 кВт и 18 кВт.</p>
+<p><strong>Пример:</strong></p>
+<ul>
+    <li>Настроенная мощность: 10 кВт.</li>
+    <li>Ограничение мощности: 6 кВт.</li>
+    <li>При размыкании контакта мощность будет выставлена на 4 кВт (10 кВт - 6 кВт).</li>
+</ul>
+<p>Для размыкания контакта удобно использовать реле <strong>ESPHome</strong>:</p>
+<ul>
+    <li>Устройство: <a href="https://devices.esphome.io/devices/ESP-01S-1-channel-relay" target="_blank">ESP-01S 1-channel relay</a></li>
+    <li>Корпус: <a href="https://www.thingiverse.com/thing:4196595" target="_blank">Thingiverse</a></li>
+    <li>Пример настроек: <a href="https://github.com/Gfermoto/Vaillant/blob/main/vaillant_power.yaml" target="_blank">vaillant_power.yaml</a></li>
+</ul>
+<p>Если у вас есть HASSio и датчик потребляемой энергии, можно настроить автоматизацию, которая временно снизит лимит потребления энергии котлом при превышении нагрузки в сети. Это полезно при включении мощных потребителей, таких как стиральная машина или духовка.</p>
+
+<hr>
+
+<h2>Управление отоплением</h2>
+
+<h3>Термостаты и актуаторы</h3>
+<p>Любой котел имеет сухой контакт для подключения нецифрового термостата. Рекомендуется использовать контроллер теплых полов <strong>Beok CCT-10</strong> для зонального отопления. Это устройство управляет рециркуляционным насосом и котлом по схеме "ИЛИ", что экономично, так как насос отключается при отсутствии запроса тепла.</p>
+<p>Для интеграции термостатов в HASSio рекомендуется проект:  
+<a href="https://github.com/fashberg/WThermostatBeca" target="_blank">WThermostatBeca</a></p>
+<p>Для управления актуаторами рекомендуется использовать контроллеры и актуаторы с нормально открытым (NO) состоянием.</p>
+
+<hr>
+
+<h3>Автоматизация отопления</h3>
+<p>Пример автоматизации для управления отоплением:  
+<a href="https://github.com/panhans/HomeAssistant/blob/main/blueprints/automation/panhans/advanced_heating_control.yaml" target="_blank">Advanced Heating Control</a></p>
+<p>Отопление активируется в ночные часы по дешевому тарифу, а также при наличии людей в доме.</p>
+<ul>
+    <li><strong>Радиаторы</strong>: Настроены на разные температуры для разных помещений.</li>
+    <li><strong>Теплые полы</strong>: Включаются на одинаковую температуру в соответствии с автоматизацией.</li>
+</ul>
+<p>Важно, чтобы запрос тепла от полов отключался раньше радиаторов, так как у котла нет <strong>bypass</strong>. Хотя бы один радиатор должен быть открыт, пока работает котел. Этого можно добиться программной калибровкой термостатических головок и правильным расположением термостатов.</p>
+
+<hr>
+
+<h2>Каскадное соединение котлов</h2>
+<p>При каскадном соединении котлов сухие контакты нельзя соединять параллельно. Также у меня не получилось запустить котлы на одной шине EBUS, поэтому я использовал два преобразователя и два демона ebusd в разных контейнерах.</p>
+
+<hr>
+
+<p>Если у вас есть вопросы или предложения, пожалуйста, создайте issue или свяжитесь со мной.  
+<strong>Спасибо за внимание!</strong></p>
+
+</body>
+</html>
