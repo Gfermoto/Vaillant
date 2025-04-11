@@ -7,7 +7,7 @@
 *[SW],scan,,,SW,,,,,,,,,
 
 # ##### dia level 1 #####,,,,,,,,,,,,,
-r,,StatusList,StatusList_DK,,,,B509,,,UCH,,,Statustexte ergänzen
+#r,,StatusList,StatusList_DK,,,,B509,,,UCH,,,Statustexte ergänzen
 r;wi,,PartloadHcKW,d.00 Heizungsteillast,,,,6C00,,,power,,,Heizungsteillast
 r;wi,,WPPostrunTime,d.01 central heating overruntime,,,,6400,,,minutes0,,,water pump overrun time for heating mode
 r1,,StorageTemp,d.04 Storage temperature,,,,1700,,,tempsensor,,,Current temperature for warm start sensor (combi boiler) / Current storage tank sensor (system boiler only)
@@ -33,17 +33,16 @@ r;wi,,SecondPumpMode,d.19 Mode of 2 speed pump,,,,A000,,,UCH,,,"Operating mode o
 r;wi,,HwcTempMax,d.20 Max value tanksetpoint,,,,D900,,,temp,,,Adjustment of maximum tank setpoint range (maximum endposition of potmeter)
 r,,DeactivationsTemplimiter,d.60 Number STL cut off,,,,2000,,,UCH,,,Number of safety temperature limiter cut offs
 r;wi,,FlowsetHcMax,d.71 Max value flow temp,,,,A500,,,temp,,,Adjustment of maximum central heating setpoint range (maximum endposition of potmeter)
-r;wi,,HwcPostrunTime,d.72 postrun time storage,,,,1104,,,UCH,-10,s,Pump overrun time
-r;wi,,StorageLoadTimeMax,d.75 Max load time storage,,,,1204,,,UCH,,,Maximum charging time
+#r;wi,,HwcPostrunTime,d.72 postrun time storage,,,,1104,,,UCH,-10,s,Pump overrun time
 r,,CodingResistor,d.76 SD_CodingResistor_DK,,,,"9200",,,HEX:3,,,boiler identification resistor
-r;wi,,PartloadHwcKW,d.77 hot water partload,,,,0804,,,UCH,,,storage part load
-r,,FlowsetHwcMax,d.78 Max value flow temp storage,,,,0F04,,,UCH,,,storage charging temperature limit
+#r;wi,,PartloadHwcKW,d.77 hot water partload,,,,0804,,,UCH,,,storage part load
+#r,,FlowsetHwcMax,d.78 Max value flow temp storage,,,,0F04,,,UCH,,,storage charging temperature limit
 r,,HcHours,d.80 operating hours CH,,,,2800,,,hoursum2,,,central heating operation hours
 r,,HwcHours,d.81 Operating hours DHW,,,,2200,,,hoursum2,,,water heating operation hours
 r,,HcStarts,d.82 Burner starts heating,,,,2900,,,UIN,-100,,cycles in heating mode
 r,,HwcStarts,d.83 Burner starts DHW,,,,2300,,,UIN,-100,,Cycles in hot water operation
 r;wi,,HoursTillService,d.84 Hours till service,,,,"AC00",,,hoursum2,,,Hours left before service is needed,,,
-r,,EBusHeatcontrol,d.90 Digital control recognized,,,,0004,,,UCH,,,Digital regulator status
+#r,,EBusHeatcontrol,d.90 Digital control recognized,,,,0004,,,UCH,,,Digital regulator status
 r,,dcfState,d.91 Status DCF 77,,,,"6900",,,dcfstate,,,DCF status
 r;ws,,DSNOffset,d.93 Device specific number,,,,3004,,,UCH,,,DSN aplliance variant setting
 r;ws,,SetFactoryValues,d.96 Set factory settings,,,,6804,,,yesno,,,Factory settings
@@ -89,7 +88,7 @@ r,,PrEnergySumHc3,PrEnergySumCH3_DK,,,,F900,,,ULG,,,Predictive Maintenance data
 r,,PrEnergyCountHc3,PrEnergyCountCH3_DK,,,,FA00,,,ULG,,,Predictive Maintenance data
 
 # ##### expert level #####
-r,,externalFlowTempDesired,external flowsetpoint,,,,2500,,,UCH,,,Flow target temperature from external regulator to terminal 7-8-9
+#r,,externalFlowTempDesired,external flowsetpoint,,,,2500,,,UCH,,,Flow target temperature from external regulator to terminal 7-8-9
 r,,externalHwcSwitch,DHWSwitch_DK,,,,0000,,,onoff,,,Demand external tank (via contact)
 r1,,WaterPressure,Waterpressure,,,,0200,,,presssensor,,,water pressure
 r,,ChangesDSN,Changes_DSN_DK,,,,0C00,,,UCH,,,Numbers adjusting (storing) the DSN
@@ -118,13 +117,13 @@ r,,PartnumberBox,Partnumber_Box,,,,C000,,,HEX:5,,,part number of the eBox
 r,,WPSecondStage,WP_SecondStage_DK,,,,ED00,,,onoff,,,Second stage of the pump activated
 r,,TemplimiterWithNTC,SD_STL_with_NTC,,,,D200,,,UCH,240=no;15=yes,,Safety temperature limit concept:1 = safety temp. Limit check with NTC0 = safety temp. Limit check with contact
 r,,VolatileLockoutIFCGV,SD_VolatileLockout_IFC_GV_DK,,,,D300,,,UCH,240=no;15=yes,,all IFC faults are volataile
-r,,VortexFlowSensor,VortexFlowSensor_DK,,,,D500,,,UCH,,,"Predictive Maintenance data, CH water flow"
+#r,,VortexFlowSensor,VortexFlowSensor_DK,,,,D500,,,UCH,,,"Predictive Maintenance data, CH water flow"
 r,,DisplayMode,DisplayMode_DK,,,,DA00,,,UCH,,,Display mode of the aplliance
 r,,InitialisationEEPROM,InitialisationEEPROM,,,,DC00,,,yesno,,,Initialisation off all EEPROM values (done in the production)
 r,,TimerInputHc,TimerInputCH_DK,,,,DE00,,,onoff,,,timer input (block heatdemand)
 r,,DCFTimeDate,DCF_TimeDate_DK,,,,E500,,,HEX:7,,,DCF Time / date stamp struct { uchar sec; uchar min; uchar std; uchar tag; uchar mon; uchar wtg; uchar jah; } Tdcf77_time;
-r,,FlowSetPotmeter,d.93 FlowSetPotmeter,,,,03F0,,,UCH,,,flow setpoint potentiometer
-r,,HwcSetPotmeter,DHWSetPotmeter,,,,F103,,,UCH,,,DHW setpoint potentiometer
+#r,,FlowSetPotmeter,d.93 FlowSetPotmeter,,,,03F0,,,UCH,,,flow setpoint potentiometer
+#r,,HwcSetPotmeter,DHWSetPotmeter,,,,F103,,,UCH,,,DHW setpoint potentiometer
 r;w,,HeatingSwitch,Heating Switch,,,,F203,,,onoff,,,Wintermode active
 r;w,,HwcSwitch,DHWSwitch,,,,F303,,,onoff,,,DHW on/off
 r,,ProductionByte,ProductionByte,,,,3E04,,,UCH,,,
@@ -134,9 +133,9 @@ r;wi,,HeatingStage1,d.100 Stage1 enable,,,,ED01,,,onoff,,,Heating stage1
 r;wi,,HeatingStage2,d.101 Stage2 enable,,,,EE01,,,onoff,,,Heating stage2
 r;wi,,HeatingStage3,d.102 Stage3 enable,,,,EF01,,,onoff,,,Heating stage3
 r,,ActiveStages,d.103 Stages active,,,,F001,,,UCH,,,Active stages
-r;wi,,MaxPower,d.104 Max power,,,,A201,,,UCH,,kW,Power limit
+#r;wi,,MaxPower,d.104 Max power,,,,A201,,,UCH,,kW,Power limit
 r,,TotalEnergy,d.105 Energy total,,,,B301,,,ULG,,kWh,Consumption
-r,,ElementHours,d.106 Elements runtime,,,,C401,,,UCH,,,Heating time
+#r,,ElementHours,d.106 Elements runtime,,,,C401,,,UCH,,,Heating time
 r,,OverTempStatus,d.107 Overtemp status,,,,D501,,,temp,,,Protection
 #r,,CurrentPower,d.108 Power now,,,,E601,,,HEX:2,,kW,Real-time
 !include,errors.inc
