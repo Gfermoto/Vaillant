@@ -189,18 +189,18 @@ accesslevel: "*"
 
 **Структура папки конфигурации:**
 
-```mermaid
-graph TD
-    Root["/etc/ebusd-configuration/latest/en/vaillant/"]
-    Root --> CSV["08.bai.csv\nглавный маршрутизатор BAI"]
-    Root --> INC1["bai.0010023658.inc\neloBLOCK конфиг"]
-    Root --> INC2["bai.0010015251.inc\natmoTEC конфиг"]
-    Root --> ERR["errors.inc\nпарсинг ошибок"]
-    Root --> HC["hcmode.inc\nрежимы контура"]
-    CSV -- "PROD=0010023658\nили HW=7503" --> INC1
-    CSV -- "PROD=0010015251\nили HW=0903" --> INC2
-    INC1 --> ERR
-    INC2 --> ERR
+```
+vaillant/
+├── 08.bai.csv            ← маршрутизатор: какой .inc грузить
+│   ├── [PROD=0010023658] → bai.0010023658.inc   (eloBLOCK)
+│   ├── [PROD=0010015251] → bai.0010015251.inc   (atmoTEC)
+│   ├── [HW=7503]        → bai.0010023658.inc   (fallback)
+│   └── [HW=0903]        → bai.0010015251.inc   (fallback)
+│
+├── bai.0010023658.inc    ← параметры eloBLOCK  ← наш файл
+├── bai.0010015251.inc    ← параметры atmoTEC   ← наш файл
+├── errors.inc            ← история ошибок (подключается из .inc)
+└── hcmode.inc            ← режимы отопительного контура
 ```
 
 ---
@@ -408,48 +408,46 @@ homeassistant:
 
 ![Схема подключения реле ESP-01S к котлу eloBLOCK](images/habr_relay_wiring.png)
 
-eloBLOCK имеет сухой контакт (клеммы котла) для ограничения мощности. При **замкнутом** контакте работает настроенная максимальная мощность. При **разомкнутом** — мощность снижается на заданное ограничение.
+eloBLOCK имеет сухой контакт (ESCO-контакт, клеммы котла) для ограничения мощности. Принцип: **разомкнутый** контакт — полная мощность, **замкнутый** — ограничение активно.
 
 ```mermaid
 graph LR
     A["MaxPower = 14 кВт\n(D.104 / D.000)"] --> C
     B["Ограничение = 6 кВт\n(D.153)"] --> C
-    C{"Сухой контакт\n(или D.152)"}
-    C -- "Замкнут\n(реле OFF)" --> D["✅ Полная мощность\n14 кВт"]
-    C -- "Разомкнут\n(реле ON)" --> E["⚡ Сниженная мощность\n14 − 6 = 8 кВт"]
+    C{"Сухой контакт\n(ESCO / D.152)"}
+    C -- "Разомкнут\n(реле OFF, default)" --> D["✅ Полная мощность\n14 кВт"]
+    C -- "Замкнут\n(реле ON, команда HA)" --> E["⚡ Сниженная мощность\n14 − 6 = 8 кВт"]
 ```
 
-> ⚠️ При ограничении «по всем фазам» на котле 18 кВт ограничение кратно 6 кВт (6/12/18 кВт).
+> ⚠️ При ограничении «по всем фазам» на котле 18 кВт шаг кратен 6 кВт (6/12/18 кВт).
 
 ### Схема подключения ESP-01S
 
-> ⚠️ **Важно:** используйте контакт **NC (нормально замкнутый)**, а не NO. При потере питания/перезагрузке ESP реле обесточивается — NC остаётся замкнутым, котёл продолжает работать на полной мощности. Это безопасное поведение по умолчанию.
+Подключаем **NO + COM**. При отключении питания ESP реле обесточивается → NO разомкнут → котёл на полной мощности (безопасный default).
 
 ```mermaid
 graph LR
     subgraph ESP01S["ESP-01S Relay Module"]
-        GPIO0[GPIO0]
-        VCC[VCC 3.3V]
-        GND[GND]
+        GPIO0["GPIO0\n(inverted: true)"]
         COM[COM]
-        NC["✅ NC\n(нормально замкнутый)"]
-        NO["❌ NO\n(не использовать)"]
+        NO["✅ NO\n(нормально разомкнутый)"]
+        NC["NC\n(не подключать)"]
     end
     subgraph Boiler["Vaillant eloBLOCK"]
-        A[Клемма A\nсухой контакт]
-        B[Клемма B\nсухой контакт]
+        A["Клемма A\nсухой контакт"]
+        B["Клемма B\nсухой контакт"]
     end
     COM -- "провод" --> A
-    NC -- "провод" --> B
-    GPIO0 -. "управление\n(inverted: true)" .-> COM
+    NO -- "провод" --> B
+    GPIO0 -. "управление" .-> COM
 ```
 
 **Логика работы:**
 
-| Состояние реле | COM-NC | Мощность котла |
+| Состояние реле | NO-COM | Мощность котла |
 |---------------|--------|---------------|
-| Выключено (ESP недоступен, default) | Замкнуто | **Полная** ✅ |
-| Включено (команда из HA) | Разомкнуто | Снижена на D.153 кВт |
+| Выключено (ESP недоступен, default) | **Разомкнуто** | **Полная** ✅ |
+| Включено (команда из HA: limit) | Замкнуто | Снижена на D.153 кВт ⚡ |
 
 ### ESPHome конфигурация
 
@@ -476,13 +474,15 @@ switch:
   - platform: gpio
     pin: GPIO0
     name: "${devicename} switch"
-    inverted: true  # реле NC-логика
+    inverted: true  # active-low GPIO: relay activates when GPIO goes LOW
 ```
 
 ### Автоматизация ограничения мощности
 
 ```yaml
 # Снижаем мощность при включении стиральной машины
+# switch ON = реле активно = NO замкнут = ограничение активно
+# switch OFF = реле выключено = NO разомкнут = полная мощность
 automation:
   - alias: "Ограничение мощности котла"
     trigger:
@@ -490,11 +490,11 @@ automation:
         entity_id: sensor.washing_machine_power
         to: "on"
     action:
-      - service: switch.turn_off
+      - service: switch.turn_on   # активируем ограничение (NO замыкается)
         target:
           entity_id: switch.vaillant_power_switch
-      - delay: "00:30:00"  # 30 минут ограничения
-      - service: switch.turn_on
+      - delay: "00:30:00"         # 30 минут ограничения
+      - service: switch.turn_off  # снимаем ограничение (NO размыкается)
         target:
           entity_id: switch.vaillant_power_switch
 ```
@@ -552,7 +552,7 @@ graph LR
     subgraph Boiler1["Котёл 1"]
         ebusd1["ebusd #1\nMQTT topic: ebusd1"]
         Adapter1["eBUS Adapter #1\n192.168.1.146"]
-        Relay1["ESP реле #1\n(NC контакт)"]
+        Relay1["ESP реле #1\n(NO контакт)"]
         VE1["eloBLOCK #1"]
         ebusd1 --> Adapter1 --> VE1
         Relay1 -- "сухой контакт" --> VE1
@@ -561,7 +561,7 @@ graph LR
     subgraph Boiler2["Котёл 2"]
         ebusd2["ebusd #2\nMQTT topic: ebusd2"]
         Adapter2["eBUS Adapter #2\n192.168.1.147"]
-        Relay2["ESP реле #2\n(NC контакт)"]
+        Relay2["ESP реле #2\n(NO контакт)"]
         VE2["eloBLOCK #2"]
         ebusd2 --> Adapter2 --> VE2
         Relay2 -- "сухой контакт" --> VE2

@@ -32,8 +32,8 @@ captive_portal:
 switch:
   - platform: gpio
     pin: GPIO0
-    name: "${devicename} switch"
-    inverted: true
+    name: "${devicename} power limit"  # ON = limit active (NO closed), OFF = full power (NO open)
+    inverted: true  # active-low GPIO: relay module activates when GPIO0 goes LOW
 
   - platform: restart
     name: ${devicename} restart

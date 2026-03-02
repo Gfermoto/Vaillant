@@ -165,7 +165,6 @@ r,,DSNStart,DSN start,,,,"3104",,,UIN,,,DSN Start adress
 r,,ExtStorageModulCon,ExtTankModulCon_DK,,,,"BF00",,,yesno,,,external tank modul connected (VR65)
 r,,PartnumberBox,Partnumber_Box,,,,"C000",,,HEX:5,,,part number of the eBox
 r,,WPSecondStage,WP_SecondStage_DK,,,,"ED00",,,onoff,,,Second stage of the pump activated
-###r,,WPSecondStage,WP_SecondStage_DK,,,,"ED00",,,UCH,240=off;15=on,,Second stage of the pump activated
 r,,TemplimiterWithNTC,SD_STL_with_NTC,,,,"D200",,,UCH,240=no;15=yes,,Safety temperature limit concept:1 = safety temp. Limit check with NTC0 = safety temp. Limit check with contact
 r,,VolatileLockoutIFCGV,SD_VolatileLockout_IFC_GV_DK,,,,"D300",,,UCH,240=no;15=yes,,all IFC faults are volataile
 r,,VortexFlowSensor,VortexFlowSensor_DK,,,,"D500",,,UIN,,,"Predictive Maintenance data, CH water flow"
@@ -269,4 +268,4 @@ r;wi,,PrEnergyCountHc2,PrEnergyCountCH2_DK,,,,"F800",,,ULG,,,Predictive Maintena
 r;wi,,PrEnergySumHc3,PrEnergySumCH3_DK,,,,"F900",,,ULG,,,Predictive Maintenance data
 r;wi,,PrEnergyCountHc3,PrEnergyCountCH3_DK,,,,"FA00",,,ULG,,,Predictive Maintenance data
 !include,errors.inc,,,,,,,,,,,,
-!include,service.inc,,,,,,,,,,,,
+# service.inc is not included: file does not exist in this repo and is not needed for SW0407/HW0903

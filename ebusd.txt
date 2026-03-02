@@ -2,7 +2,7 @@
 # For Docker usage, see docker-compose.yml
 
 # Auto-pick CSV config files matching the initial scan result
-scanconfig: true
+scanconfig: full
 
 # Log level: use "notice" for normal operation, "debug" only for troubleshooting
 loglevel_all: notice
@@ -25,11 +25,11 @@ network_device: 192.168.1.142:9999
 mode: ens
 
 # Extra transfer latency in ms (increase if you see many CRC errors)
-latency: 15
+latency: 10
 
 # Retry counts for improved reliability
 acquireretries: 10
-receivetimeout: 2500
+receivetimeout: 200
 sendretries: 5
 scanretries: 10
 
