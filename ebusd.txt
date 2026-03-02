@@ -1,18 +1,37 @@
+# ebusd configuration for HASSio addon (LukasGrebe/ha-addons)
+# For Docker usage, see docker-compose.yml
+
+# Auto-pick CSV config files matching the initial scan result
 scanconfig: true
-loglevel_all: debug
-mqtttopic: ebusd1
+
+# Log level: use "notice" for normal operation, "debug" only for troubleshooting
+loglevel_all: notice
+
+# MQTT topic prefix
+mqtttopic: ebusd
+
+# MQTT integration config for Home Assistant discovery
 mqttint: /config/ebusd/mqtt-hassio.cfg
+
+# Publish in JSON format (required for mqtt-hassio.cfg integration)
 mqttjson: true
+
+# Full scan to detect all devices on the bus
 scan: full
+
+# eBUS adapter address — change to your adapter IP:port
+# Prefix "ens:" = enhanced high-speed protocol (recommended for ebusd adapter v5)
 network_device: 192.168.1.142:9999
 mode: ens
-http: false
-configpath: /config/ebusd/ebusd-configuration/latest/en
+
+# Extra transfer latency in ms (increase if you see many CRC errors)
 latency: 15
+
+# Retry counts for improved reliability
 acquireretries: 10
-pollretries: 10
 receivetimeout: 2500
 sendretries: 5
-failurescan: "no"
 scanretries: 10
+
+# Allow all access levels (required for write commands)
 accesslevel: "*"

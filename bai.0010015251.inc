@@ -1,5 +1,7 @@
 # type (r[1-9];w;u),circuit,name,[comment],[QQ],ZZ,PBSB,[ID],field1,part (m/s),datatypes/templates,divider/values,unit,comment
-#,BAI00,atmoTEC,0010015251,,,,,,,,,,
+#,BAI00,atmoTEC,0010015251 SW0407 HW0903,,,,,,,,,,
+# Note: Parameters marked with "## ERR" return ERR: invalid position on SW0407/HW0903.
+# These are typically newer firmware features or CO-sensor related (atmoTEC PLUS only).
 *r,,,,,,"B509","0D",,,,,,
 *w,,,,,,"B509","0E",,,,,,
 *wi,#install,,,,,"B509","0E",,,,,,
@@ -74,45 +76,49 @@ r,,EBusHeatcontrol,d.90 Digital control recognized,,,,"0004",,,yesno,,,Digital r
 r,,dcfState,d.91 Status DCF 77,,,,"6900",,,dcfstate,,,DCF status
 [SW>=413]r,,APCComStatus,d.92 APC_ComStatus_DK,,,,"6200",,,UCH,,,actoSTORE communication status
 # ##### expert level #####,,,,,,,,,,,,,
-r,,SMGVCorrFactorLowOffset,e.04 SMGV_CorrFactorLow_Offset_DK,,,,"0F01",,,percents,,,CO2 offset-value low-load
-r,,SMGVCorrFactorHighOffset,e.05 SMGV_CorrFactorHigh_Offset_DK,,,,"1001",,,percents,,,CO2 offset-value high-load
-r,,COConcentration,e.06 SD_CO_Concentration_DK,,,,"0601",,,UIN,,ppm,calculated CO-concentration
-r,,CORsens,e.07 SD_CO_Rsens_DK,,,,"0501",,,UIN,,kOhm,actual CO-sensor resistance
-r,,COR0,e.08 SD_CO_R0_DK,,,,"0401",,,UIN,,kOhm,CO-sensor resistance @ 0ppm CO
-r,,COPTCActualTemp,e.09 SD_CO_PTC_ActualTemp_DK,,,,"0901",,,temp,,,actual heater-temperature
-r,,COPTCMeasureTemp,e.10 CO_PTC_MeasureTemp_DK,,,,"0701",,,temp,,,heater-temperature during burner operation
-r,,COCorrFactorOffset,e.11 CO_CorrFactor_Offset_DK,,,,"0E01",,,percents,,,CO2 offset value for gas-adaptive correction-factor
-r,,COCorrFactor,e.12 CO_CorrFactor_DK,,,,"0101",,,percent0,,,calculated gas-adaptive correction-factor
-r,,SMGVCorrFactorLow,e.13 SMGV_CorrFactorLow_DK,,,,"0201",,,percent0,,,calculated correction-factor low-load
-r,,SMGVCorrFactorHigh,e.14 SMGV_CorrFactorHigh_DK,,,,"0301",,,percent0,,,calculated correction-factor high-load
-r,,COLastError,e.18 CO_LastError_DK,,,,"0A01",,,UCH,,,CO-sensor failure number
-r,,FluePipeFactor,e.19 FluePipeFactor_DK,,,,"0B01",,,UCH,,,calculated fluepipe-factor
+# --- CO sensor parameters (e.04-e.19): atmoTEC PLUS only / newer firmware ---
+# All return ERR: invalid position on SW0407/HW0903. Uncomment only if your device has CO sensor.
+#r,,SMGVCorrFactorLowOffset,e.04 SMGV_CorrFactorLow_Offset_DK,,,,"0F01",,,percents,,,CO2 offset-value low-load
+#r,,SMGVCorrFactorHighOffset,e.05 SMGV_CorrFactorHigh_Offset_DK,,,,"1001",,,percents,,,CO2 offset-value high-load
+#r,,COConcentration,e.06 SD_CO_Concentration_DK,,,,"0601",,,UIN,,ppm,calculated CO-concentration
+#r,,CORsens,e.07 SD_CO_Rsens_DK,,,,"0501",,,UIN,,kOhm,actual CO-sensor resistance
+#r,,COR0,e.08 SD_CO_R0_DK,,,,"0401",,,UIN,,kOhm,CO-sensor resistance @ 0ppm CO
+#r,,COPTCActualTemp,e.09 SD_CO_PTC_ActualTemp_DK,,,,"0901",,,temp,,,actual heater-temperature
+#r,,COPTCMeasureTemp,e.10 CO_PTC_MeasureTemp_DK,,,,"0701",,,temp,,,heater-temperature during burner operation
+#r,,COCorrFactorOffset,e.11 CO_CorrFactor_Offset_DK,,,,"0E01",,,percents,,,CO2 offset value for gas-adaptive correction-factor
+#r,,COCorrFactor,e.12 CO_CorrFactor_DK,,,,"0101",,,percent0,,,calculated gas-adaptive correction-factor
+#r,,SMGVCorrFactorLow,e.13 SMGV_CorrFactorLow_DK,,,,"0201",,,percent0,,,calculated correction-factor low-load
+#r,,SMGVCorrFactorHigh,e.14 SMGV_CorrFactorHigh_DK,,,,"0301",,,percent0,,,calculated correction-factor high-load
+#r,,COLastError,e.18 CO_LastError_DK,,,,"0A01",,,UCH,,,CO-sensor failure number
+#r,,FluePipeFactor,e.19 FluePipeFactor_DK,,,,"0B01",,,UCH,,,calculated fluepipe-factor
 r,,HwcImpellorSwitch,DHW impellor switch,,,,"5700",,,yesno,,,domestic hot water (tapping) demand
-r,,COPTCTargetTemp,SD_CO_PTC_TargetTemp_DK,,,,"0801",,,temp,,,target heater-temperature
-r,,BoilerType2,BoilerType_2_DK,,,,"0C01",,,ULG,,,
-r,,TMMaxTimeTemp,TTM_MaxTime_DK,,,,"1801",,,UIN,,sec,maximum time for calibration-routine
-r,,TMAverageTimeSumTemp,TTM_AverageTime_sum_DK,,,,"1901",,,UIN,,_1S * 100,average time for calibration-routine
-r,,COCorrFactorMax,CO_CorrFactor_max_DK,,,,"1A01",,,UIN,,%,maximum value of calculated gas-adaptive correction-factor
-r,,COCorrFactorSum,CO_CorrFactor_sum_DK,,,,"1B01",,,UIN,,% * 100,average value of calculated gas-adaptive correction-factor
-r,,SMGVCorrFactorLowSum,SMGV_CorrFactorLow_sum_DK,,,,"1C01",,,UIN,,% * 100,average value of calculated correction-factor low-load
-r,,SMGVCorrFactorHighSum,SMGV_CorrFactorHigh_sum_DK,,,,"1D01",,,UIN,,% * 100,average value of calculated correction-factor high-load
-r,,COPTCADC1,CO_PTC_ADC1_DK,,,,"1E01",,,UIN,,,
-r,,COPTCADC2,CO_PTC_ADC2_DK,,,,"1F01",,,UIN,,,
-r,,COPTCPWMTest,CO_PTC_PWM_Test_DK,,,,"2001",,,UIN,,,
-r,,COPTCCalParms,CO_PTC_CalParms,,,,"2101",,,UCH,,,
-r,,CalibrationDone,TTM_Done_DK,,,,"2201",,,onoff,,,calibration-routine after burner start finished
-r,,CalibrationRecalDone,TTM_RecalDone_DK,,,,"2301",,,onoff,,,calibration-routine during burner operation finished
-r,,CalibrationLowDone,TTL_Done_DK,,,,"2401",,,onoff,,,calibration-routine low-load after burner start finished
-r,,CalibrationLowRecalDone,TTL_RecalDone_DK,,,,"2501",,,onoff,,,calibration-routine low-load during burner operation finished
-r,,CalibrationHighDone,TTH_Done_DK,,,,"2601",,,onoff,,,calibration-routine high-load after burner start finished
-r,,CalibrationHighRecalDone,TTH_RecalDone_DK,,,,"2701",,,onoff,,,calibration-routine high-load during burner operation finished
-r,,WindOff,Wind_Off_DK,,,,"2801",,,onoff,,,Wind-function not active
-r,,COmonOff,COmon_Off_DK,,,,"2901",,,onoff,,,CO-monitoring not active
-r,,FlameLossOff,FlameLoss_Off_DK,,,,"2A01",,,onoff,,,Flame-loss-function not active
-r,,ForcedR0Trigger,SD_ForcedR0_Trigger_DK,,,,"2B01",,,onoff,,,forced-R0-mode active
-r,,StartPeakEnable,StartPeak_Enable_DK,,,,"2C01",,,onoff,,,
-r,,COPTCU1,CO_PTC_U1_DK,,,,"2D01",,,UIN,,,
-r,,COPTCU2,CO_PTC_U2_DK,,,,"2E01",,,UIN,,,
+#r,,COPTCTargetTemp,SD_CO_PTC_TargetTemp_DK,,,,"0801",,,temp,,,target heater-temperature
+# BoilerType2: returns ERR: invalid position on SW0407 (newer register, added in later firmware)
+#r,,BoilerType2,BoilerType_2_DK,,,,"0C01",,,ULG,,,
+#r,,TMMaxTimeTemp,TTM_MaxTime_DK,,,,"1801",,,UIN,,sec,maximum time for calibration-routine
+#r,,TMAverageTimeSumTemp,TTM_AverageTime_sum_DK,,,,"1901",,,UIN,,_1S * 100,average time for calibration-routine
+#r,,COCorrFactorMax,CO_CorrFactor_max_DK,,,,"1A01",,,UIN,,%,maximum value of calculated gas-adaptive correction-factor
+#r,,COCorrFactorSum,CO_CorrFactor_sum_DK,,,,"1B01",,,UIN,,% * 100,average value of calculated gas-adaptive correction-factor
+#r,,SMGVCorrFactorLowSum,SMGV_CorrFactorLow_sum_DK,,,,"1C01",,,UIN,,% * 100,average value of calculated correction-factor low-load
+#r,,SMGVCorrFactorHighSum,SMGV_CorrFactorHigh_sum_DK,,,,"1D01",,,UIN,,% * 100,average value of calculated correction-factor high-load
+#r,,COPTCADC1,CO_PTC_ADC1_DK,,,,"1E01",,,UIN,,,
+#r,,COPTCADC2,CO_PTC_ADC2_DK,,,,"1F01",,,UIN,,,
+#r,,COPTCPWMTest,CO_PTC_PWM_Test_DK,,,,"2001",,,UIN,,,
+#r,,COPTCCalParms,CO_PTC_CalParms,,,,"2101",,,UCH,,,
+# --- Calibration parameters: return ERR: invalid position on SW0407 ---
+#r,,CalibrationDone,TTM_Done_DK,,,,"2201",,,onoff,,,calibration-routine after burner start finished
+#r,,CalibrationRecalDone,TTM_RecalDone_DK,,,,"2301",,,onoff,,,calibration-routine during burner operation finished
+#r,,CalibrationLowDone,TTL_Done_DK,,,,"2401",,,onoff,,,calibration-routine low-load after burner start finished
+#r,,CalibrationLowRecalDone,TTL_RecalDone_DK,,,,"2501",,,onoff,,,calibration-routine low-load during burner operation finished
+#r,,CalibrationHighDone,TTH_Done_DK,,,,"2601",,,onoff,,,calibration-routine high-load after burner start finished
+#r,,CalibrationHighRecalDone,TTH_RecalDone_DK,,,,"2701",,,onoff,,,calibration-routine high-load during burner operation finished
+#r,,WindOff,Wind_Off_DK,,,,"2801",,,onoff,,,Wind-function not active
+#r,,COmonOff,COmon_Off_DK,,,,"2901",,,onoff,,,CO-monitoring not active
+#r,,FlameLossOff,FlameLoss_Off_DK,,,,"2A01",,,onoff,,,Flame-loss-function not active
+#r,,ForcedR0Trigger,SD_ForcedR0_Trigger_DK,,,,"2B01",,,onoff,,,forced-R0-mode active
+#r,,StartPeakEnable,StartPeak_Enable_DK,,,,"2C01",,,onoff,,,
+#r,,COPTCU1,CO_PTC_U1_DK,,,,"2D01",,,UIN,,,
+#r,,COPTCU2,CO_PTC_U2_DK,,,,"2E01",,,UIN,,,
 r,,ThresholdWaterpressureMin,MinThresholdWaterpressure_DK,,,,"1201",,,UIN,,bar,
 r,,ThresholdWaterpressureMax,MaxThresholdWaterpressure_DK,,,,"1301",,,UIN,,bar,
 r,,MeasuredFluePipeFactor,MeasuredFluePipeFactor_DK,,,,"3401",,,UCH,,,
@@ -125,7 +131,7 @@ r,,SMGVCurrentPos,SMGV_CurrentPos_DK,,,,"7C01",,,SIN,,,
 r,,PredSourcePressureRefPressureCounter,Pred_AirPressure_RefPressureCounter_DK,,,,"7F01",,,UCH,,,
 r,,PredSourcePressureRefPressureSum,Pred_AirPressure_RefPressureSum_DK,,,,"8001",,,UIN,,,
 r;ws,,SRFLIDEMode,SR_FLIDE_Mode_DK,,,,"8101",,,UCH,,,
-r,,COSensorSNR,CO_Sensor_SNR,,,,"AF01",,,HEX:7,,,
+#r,,COSensorSNR,CO_Sensor_SNR,,,,"AF01",,,HEX:7,,,
 r,,WaterPressure,Waterpressure,,,,"0200",,,presssensor,,,value of waterpressure-sensor
 r,,Flame,Flame,,,,"0500",,,UCH,240=off;15=on,,flame
 r,,ChangesDSN,Changes_DSN_DK,,,,"0C00",,,UCH,,,Numbers adjusting (storing) the DSN

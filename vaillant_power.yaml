@@ -24,7 +24,7 @@ wifi:
   password: "your_secure_password"
 
   ap:
-    ssid: "Bird Feeder Fallback Hotspot"
+    ssid: "Vaillant Power Fallback"
     password: "your_secure_password"
 
 captive_portal:
