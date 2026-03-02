@@ -136,7 +136,7 @@
 - Ограничение мощности (D.153): 6 кВт.  
 - При замыкании сухого контакта (или через D.152=4) мощность будет 4 кВт (10 − 6 = 4).  
 
-Для размыкания контакта удобно использовать реле **ESPHome**:  
+Для замыкания/управления контактом удобно использовать реле **ESPHome** (NO+COM, замкнут = ограничение):  
 - Устройство: [ESP-01S 1-channel relay](https://devices.esphome.io/devices/ESP-01S-1-channel-relay)  
 - Корпус: [Thingiverse](https://www.thingiverse.com/thing:4196595)  
 - Пример настроек: [vaillant_power.yaml](https://github.com/Gfermoto/Vaillant/blob/main/vaillant_power.yaml)  

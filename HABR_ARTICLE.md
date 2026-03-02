@@ -62,9 +62,9 @@ graph LR
 |-----------|-----------|---------|
 | **eBUS Adapter** | Физическое подключение к шине | Shield v5, v5-c6 |
 | **USR-ES1** | Ethernet-модуль для адаптера | Опционально |
-| **ebusd** | Демон для декодирования eBUS | Docker / HASSio addon |
+| **ebusd** | Демон для декодирования eBUS | Docker / Home Assistant addon |
 | **MQTT broker** | Шина сообщений | Mosquitto |
-| **Home Assistant** | Умный дом | HASS / HASSio |
+| **Home Assistant** | Умный дом | HAOS / Docker |
 
 ---
 
@@ -161,7 +161,7 @@ services:
       EBUSD_MQTTJSON: ""
 ```
 
-### Вариант 2: HASSio addon
+### Вариант 2: Home Assistant addon (HAOS)
 
 Установить через: `Supervisor → Add-on Store → репозиторий LukasGrebe/ha-addons`
 
@@ -619,6 +619,11 @@ services:
 # Список всех обнаруженных устройств
 ebusctl i
 
+# Определить тип данных неизвестного параметра (raw hex запрос)
+# Пример для E601 (CurrentPower): смотрим сколько байт вернёт котёл
+ebusctl hex b509 0d E601
+# 1 байт → тип UCH; 2 байта → UIN или SIN; ошибка → регистр недоступен
+
 # Прочитать конкретный параметр
 ebusctl read bai FlowTemp
 
@@ -696,8 +701,9 @@ docker exec ebusd ebusctl i
 - 📖 [ebusd wiki](https://github.com/john30/ebusd/wiki)
 - 🔧 [ebusd-configuration](https://github.com/john30/ebusd-configuration)
 - 📡 [eBUS Adapter Shield v5](https://adapter.ebusd.eu/v5/index.en.html)
-- 🏠 [HASSio addon ebusd](https://github.com/LukasGrebe/ha-addons)
+- 🏠 [Home Assistant addon ebusd](https://github.com/LukasGrebe/ha-addons)
 - 🌡️ [WThermostatBeca](https://github.com/fashberg/WThermostatBeca) — прошивка для термостатов Beca
+- 🔍 [Туториал @stalniy по eloBLOCK](https://gist.github.com/stalniy/5ec118d50f7b8c0a87514e9085418b64) — UA, полное руководство + скрипт поиска неизвестных регистров
 - 🤖 [Advanced Heating Control Blueprint](https://github.com/panhans/HomeAssistant/blob/main/blueprints/automation/panhans/advanced_heating_control.yaml)
 
 ---

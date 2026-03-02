@@ -170,7 +170,8 @@ r,,OverTempStatus,d.107 Overtemp status,,,,D501,,,temp,,,Over-temperature protec
 # Address E601 confirmed present in bus grab.
 # Type: HEX:2 — applied based on @Akeebaby (GitHub ebusd-configuration issue #254, model 0010023684 HW7503 SW0108).
 # ⚠️ NOT VERIFIED on 0010023658 SW0109. @Akeebaby also commented this out as "total error" on their unit.
-# Alternative: try UCH (1 byte) if HEX:2 returns ERR.
+# To debug raw response: ebusctl hex b509 0d E601
+#   1 byte response → try UCH;  2 bytes → try UIN or SIN;  wrong length → ERR: invalid position
 r,,CurrentPower,d.108 Power now,,,,E601,,,HEX:2,,kW,Current real-time power output (unverified type; source: @Akeebaby issue #254)
 
 # --- Power limiter via dry contact (from official manual D.149, D.152-D.155) ---
