@@ -39,9 +39,13 @@ r;wi,,FlowsetHcMax,d.71 Max value flow temp,,,,A500,,,temp,,,Adjustment of maxim
 # StorageLoadTimeMax: DHW storage-specific, returns ERR: invalid position on eloBLOCK
 #r;wi,,StorageLoadTimeMax,d.75 Max load time storage,,,,1204,,,minutes0,,,Maximum charging time
 r,,CodingResistor,d.76 SD_CodingResistor_DK,,,,"9200",,,HEX:3,,,boiler identification resistor
-# PartloadHwcKW / FlowsetHwcMax: DHW storage-specific, returns ERR: invalid position on eloBLOCK
-#r;wi,,PartloadHwcKW,d.77 hot water partload,,,,0804,,,power,,,storage part load
-#r,,FlowsetHwcMax,d.78 Max value flow temp storage,,,,0F04,,,temp,,,storage charging temperature limit
+# d.77: PartloadHwcKW — storage charging power limit (1–9 kW steps).
+# Address A900 confirmed on PROD=0010023658 (SW=0109) and 0010023684 (SW=0108), 0010023691
+# by @AznKid45, @stalniy, @Akeebaby, @carhensi — john30/ebusd-configuration issue #254, PR #567.
+# Previous address 0804 (from gas boiler fallback bai.308523.inc) was incorrect for eloBLOCK.
+# LIVE TEST 2026-03-02: confirmed 6 kW response via MQTT GET on 0010023658 SW=0109 ✅
+r;wi,,PartloadHwcKW,d.77 hot water partload,,,,A900,,,UCH,,kW,Storage charging power limit (A900 confirmed)
+#r,,FlowsetHwcMax,d.78 Max value flow temp storage,,,,0F04,,,UCH,,,storage charging temperature limit
 r,,HcHours,d.80 operating hours CH,,,,2800,,,hoursum2,,,central heating operation hours
 r,,HwcHours,d.81 Operating hours DHW,,,,2200,,,hoursum2,,,water heating operation hours
 r,,HcStarts,d.82 Burner starts heating,,,,2900,,,UIN,-100,,cycles in heating mode
@@ -142,37 +146,48 @@ r,,ProductionByte,ProductionByte,,,,3E04,,,UCH,,,
 # Source: official Vaillant eloBLOCK VE Installation Manual 0020265768_01
 # Confirmed D.xxx codes from manual matched to eBUS register addresses
 
-# --- Heating element stages (d.100-d.103, registers are consecutive +1) ---
-r;wi,,HeatingStage1,d.100 Stage1 enable,,,,ED01,,,onoff,,,Heating element stage 1 enable/disable
-r;wi,,HeatingStage2,d.101 Stage2 enable,,,,EE01,,,onoff,,,Heating element stage 2 enable/disable
-r;wi,,HeatingStage3,d.102 Stage3 enable,,,,EF01,,,onoff,,,Heating element stage 3 enable/disable
-r,,ActiveStages,d.103 Stages active,,,,F001,,,UCH,,,Active heating stages bitmask (bit0=stage1, bit1=stage2, bit2=stage3)
+# --- Heating element stages (d.100-d.103) ---
+# LIVE TEST on 0010023658 SW=0109, 2026-03-02 (Statenumber=4, active heating):
+#   ED01 (Stage1) → ✅ responds via r1 poll and MQTT GET; value "off" even during active heating
+#   EE01 (Stage2) → ❌ no response — register absent on VE14 (2-element config: stage1+stage3)
+#   EF01 (Stage3) → ✅ responds via r1 poll and MQTT GET; value "off" even during active heating
+#   F001 (ActiveStages) → observed constant 0xC0=192 (bits 6+7) in ALL boiler states (standby+heating)
+#     Bit meaning UNKNOWN: manual says bits 0–2 = stage1/2/3, but live value contradicts this.
+#     Possible: config register showing "stages available", or pump-mode byte. Does NOT change during heating.
+# r1 = active poll (boiler does NOT broadcast these registers)
+r1;wi,,HeatingStage1,d.100 Stage1 enable,,,,ED01,,,onoff,,,Heating element stage 1 (r1: responds; off=normal; controllable via wi)
+# HeatingStage2 (EE01): NOT PRESENT on VE14 — commented out to avoid eBUS errors
+#r1;wi,,HeatingStage2,d.101 Stage2 enable,,,,EE01,,,onoff,,,Heating element stage 2 (ABSENT on VE14 SW=0109 — no response)
+r1;wi,,HeatingStage3,d.102 Stage3 enable,,,,EF01,,,onoff,,,Heating element stage 3 (r1: responds; off=normal; controllable via wi)
+# ActiveStages: constant 0xC0=192 regardless of state. Use HeatingStage1/3 for actual stage status.
+r1,,ActiveStages,d.103 Stages active,,,,F001,,,UCH,,,Active heating stages (observed: always 0xC0=192 on VE14; real meaning TBD)
 
-# --- Power management (d.104-d.108, registers have step +0x11 between addresses) ---
-# d.104: MaxPower — configures maximum output power in kW (UCH, 1 byte, 0-28)
-r;wi,,MaxPower,d.104 Max power,,,,A201,,,UCH,,kW,Max configured power output
-
-# d.105: TotalEnergy — total energy consumed since reset (ULG, 4 bytes, kWh)
-# Use for Home Assistant Energy Dashboard (state_class: total_increasing)
-r,,TotalEnergy,d.105 Energy total,,,,B301,,,ULG,,kWh,Total energy consumption (kWh)
-
-# d.106: ElementHours — total operating time of heating elements.
-# Type: hoursum2 — by analogy with gas boiler HcHours (2800), not independently verified on eloBLOCK.
-# ⚠️ NOT VERIFIED in any public source for 0010023658.
-r,,ElementHours,d.106 Elements runtime,,,,C401,,,hoursum2,,,Heating elements total operating hours (type unverified)
-
-# d.107: OverTempStatus — overtemperature protection trigger value (temp type)
-r,,OverTempStatus,d.107 Overtemp status,,,,D501,,,temp,,,Over-temperature protection status
-
-# d.108: CurrentPower — real-time power output.
-# Note: Official manual D.155 also describes "current output (continuously updated)".
-# D.108 (E601) may be the eBUS-readable value; D.155 may be display-only.
-# Address E601 confirmed present in bus grab.
-# Type: HEX:2 — applied based on @Akeebaby (GitHub ebusd-configuration issue #254, model 0010023684 HW7503 SW0108).
-# ⚠️ NOT VERIFIED on 0010023658 SW0109. @Akeebaby also commented this out as "total error" on their unit.
-# To debug raw response: ebusctl hex b509 0d E601
-#   1 byte response → try UCH;  2 bytes → try UIN or SIN;  wrong length → ERR: invalid position
-r,,CurrentPower,d.108 Power now,,,,E601,,,HEX:2,,kW,Current real-time power output (unverified type; source: @Akeebaby issue #254)
+# --- Power management (d.104-d.108) ---
+# LIVE TEST on 0010023658 SW=0109, 2026-03-02 during active heating (Statenumber=4, FlowTemp rising):
+#   Tested via MQTT forced-read (ebusd1/bai/{Name}/get topic) + mosquitto_sub monitoring.
+#   RESULT: A201, B301, C401, E601 — ALL no response (even with 20s monitoring window).
+#   Conclusion: INACCESSIBLE on SW=0109 via standard r/r1 eBUS B509/0D commands.
+#   Possible causes: installer-level access required; SW=0109 firmware maps differently;
+#   or manual 0020265768_01 addresses don't apply to this product code revision.
+#
+# d.104: MaxPower (A201) — inaccessible on SW=0109
+#r;wi,,MaxPower,d.104 Max power,,,,A201,,,UCH,,kW,Max output power (INACCESSIBLE on SW=0109)
+#
+# d.105: TotalEnergy (B301) — inaccessible on SW=0109
+#r,,TotalEnergy,d.105 Energy total,,,,B301,,,ULG,,kWh,Total energy kWh (INACCESSIBLE on SW=0109)
+#
+# d.106: ElementHours (C401) — inaccessible on SW=0109
+#r,,ElementHours,d.106 Elements runtime,,,,C401,,,hoursum2,,,Elements runtime (INACCESSIBLE on SW=0109)
+#
+# d.107: OverTempStatus (D501) — passively captured once during eBUS init scan; not re-readable via r/r1.
+#   Raw value observed: 1702 = 0x06A6 (LE). type=temp (D2C,/2) decodes as 851.0°C (display artifact).
+#   Actual interpretation: 1702/20 = 85.1°C = overtemperature protection threshold (standard VE).
+#   ⚠️ In HA, add template sensor: {{ states('sensor.ebusd1_bai_overtempstatus')|float / 10 }}
+r,,OverTempStatus,d.107 Overtemp status,,,,D501,,,temp,,,Overtemp threshold (passive only; 851.0°C display = raw/2 artifact; real value = shown/10 = 85.1°C)
+#
+# d.108: CurrentPower (E601) — inaccessible on SW=0109
+# @Akeebaby (0010023684 SW=0108) also commented this out as "total error". Confirmed inaccessible on SW=0109.
+#r,,CurrentPower,d.108 Power now,,,,E601,,,HEX:2,,kW,Current power (INACCESSIBLE on SW=0109)
 
 # --- Power limiter via dry contact (from official manual D.149, D.152-D.155) ---
 # IMPORTANT: D.152 and D.153 allow SOFTWARE power limiting without dry contact hardware!
@@ -202,5 +217,13 @@ r,,CurrentPower,d.108 Power now,,,,E601,,,HEX:2,,kW,Current real-time power outp
 #   "The product's current output (continuously updated information)"
 #   May be the same as d.108/E601 or a separate display-only register.
 # r,,CurrentPowerDisplay,d.155 Current power,,,,????01,,,UCH,,kW,Current output (continuously updated)
+
+# SetModeOverride — thermostat emulation over eBUS (no external thermostat hardware required).
+# Confirmed working on 0010023657 (SW=0109, HW=7503) by @stalniy:
+#   https://gist.github.com/stalniy/5ec118d50f7b8c0a87514e9085418b64
+# Must be resent every ~60 seconds — boiler reverts to display settings otherwise.
+# Usage: ebusctl w -c bai SetModeOverride "0;55;45;-;-;0;0;0;-;0;0;0"
+#   fields: hcmode;flowtempdesired;hwctempdesired;hwcflowtempdesired;-;disablehc;0;disablehwcload;-;0;0;0
+wi,bai,SetModeOverride,Operation Mode,,08,"B510","00",hcmode,,UCH,,,,flowtempdesired,,D1C,,,,hwctempdesired,,D1C,,,,hwcflowtempdesired,,UCH,,,,setmode1,,UCH,,,,disablehc,,BI0,,,,disablehwctapping,,BI1,,,,disablehwcload,,BI2,,,,setmode2,,UCH,,,,remoteControlHcPump,,BI0,,,,releaseBackup,,BI1,,,,releaseCooling,,BI2
 
 !include,errors.inc
