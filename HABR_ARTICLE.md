@@ -43,16 +43,16 @@
 
 ```mermaid
 graph LR
-    Boiler["🔥 Vaillant\neloBLOCK / atmoTEC"]
-    Adapter["📡 eBUS Adapter\nShield v5"]
-    Ebusd["⚙️ ebusd daemon\n(Docker / HASSio)"]
-    MQTT["📨 MQTT Broker\n(Mosquitto)"]
+    Boiler["🔥 Котёл Vaillant"]
+    Adapter["📡 eBUS Adapter Shield v5"]
+    Ebusd["⚙️ ebusd daemon"]
+    MQTT["📨 MQTT Broker"]
     HA["🏠 Home Assistant"]
 
-    Boiler -- "eBUS (2 провода)" --> Adapter
-    Adapter -- "TCP :9999\nENS protocol" --> Ebusd
+    Boiler -- "eBUS 2-wire" --> Adapter
+    Adapter -- "TCP :9999 ENS" --> Ebusd
     Ebusd -- "MQTT publish" --> MQTT
-    MQTT -- "MQTT subscribe\n+ Discovery" --> HA
+    MQTT -- "MQTT Discovery" --> HA
 ```
 
 **Компоненты:**
@@ -85,8 +85,8 @@ graph LR
 
 ```mermaid
 graph LR
-    A["🔥 Котёл\nклемма eBUS +/-"] -- "2 провода\n(полярность не важна)" --> B["📡 eBUS Adapter\nShield v5\neBUS IN"]
-    B -- "WiFi / Ethernet\nTCP :9999" --> C["🌐 Сеть LAN"]
+    A["🔥 Котёл — клемма eBUS +/-"] -- "2 провода, полярность не важна" --> B["📡 eBUS Adapter Shield v5"]
+    B -- "WiFi / Ethernet TCP:9999" --> C["🌐 Сеть LAN"]
 ```
 
 ### Модуль USR-ES1 (опционально)
@@ -412,11 +412,11 @@ eloBLOCK имеет сухой контакт (ESCO-контакт, клеммы
 
 ```mermaid
 graph LR
-    A["MaxPower = 14 кВт\n(D.104 / D.000)"] --> C
-    B["Ограничение = 6 кВт\n(D.153)"] --> C
-    C{"Сухой контакт\n(ESCO / D.152)"}
-    C -- "Разомкнут\n(реле OFF, default)" --> D["✅ Полная мощность\n14 кВт"]
-    C -- "Замкнут\n(реле ON, команда HA)" --> E["⚡ Сниженная мощность\n14 − 6 = 8 кВт"]
+    A["MaxPower = 14 кВт (D.104)"] --> C
+    B["Ограничение = 6 кВт (D.153)"] --> C
+    C{"Сухой контакт / D.152"}
+    C -- "Разомкнут — реле OFF, default" --> D["✅ Полная мощность 14 кВт"]
+    C -- "Замкнут — реле ON, команда HA" --> E["⚡ Снижено: 14 − 6 = 8 кВт"]
 ```
 
 > ⚠️ При ограничении «по всем фазам» на котле 18 кВт шаг кратен 6 кВт (6/12/18 кВт).
@@ -428,17 +428,17 @@ graph LR
 ```mermaid
 graph LR
     subgraph ESP01S["ESP-01S Relay Module"]
-        GPIO0["GPIO0\n(inverted: true)"]
-        COM[COM]
-        NO["✅ NO\n(нормально разомкнутый)"]
-        NC["NC\n(не подключать)"]
+        GPIO0["GPIO0 (inverted: true)"]
+        COM["COM"]
+        NO["✅ NO — подключить"]
+        NC["NC — не подключать"]
     end
     subgraph Boiler["Vaillant eloBLOCK"]
-        A["Клемма A\nсухой контакт"]
-        B["Клемма B\nсухой контакт"]
+        A["Клемма A сухого контакта"]
+        B["Клемма B сухого контакта"]
     end
-    COM -- "провод" --> A
-    NO -- "провод" --> B
+    COM --> A
+    NO --> B
     GPIO0 -. "управление" .-> COM
 ```
 
@@ -509,11 +509,11 @@ automation:
 
 ```mermaid
 graph TD
-    Thermostat["🌡️ Термостаты / WThermostatBeca\n(запрос тепла по зонам)"]
-    CCT["🎛️ Beok CCT-10\nконтроллер тёплых полов"]
-    Boiler["🔥 Котёл Vaillant\n(сухой контакт «ИЛИ»)"]
-    Rad["🔧 Радиаторы\n+ термоголовки"]
-    Floor["♨️ Тёплый пол\n+ актуаторы NC"]
+    Thermostat["🌡️ Термостаты WThermostatBeca"]
+    CCT["🎛️ Beok CCT-10 — контроллер пола"]
+    Boiler["🔥 Котёл Vaillant — сухой контакт OR"]
+    Rad["🔧 Радиаторы + термоголовки"]
+    Floor["♨️ Тёплый пол + актуаторы NC"]
 
     Thermostat -- "запрос тепла" --> Boiler
     CCT -- "запрос тепла" --> Boiler
@@ -550,18 +550,18 @@ graph LR
     HA["🏠 Home Assistant"]
 
     subgraph Boiler1["Котёл 1"]
-        ebusd1["ebusd #1\nMQTT topic: ebusd1"]
-        Adapter1["eBUS Adapter #1\n192.168.1.146"]
-        Relay1["ESP реле #1\n(NO контакт)"]
+        ebusd1["ebusd #1 — topic: ebusd1"]
+        Adapter1["eBUS Adapter #1 — 192.168.1.146"]
+        Relay1["ESP реле #1 — NO контакт"]
         VE1["eloBLOCK #1"]
         ebusd1 --> Adapter1 --> VE1
         Relay1 -- "сухой контакт" --> VE1
     end
 
     subgraph Boiler2["Котёл 2"]
-        ebusd2["ebusd #2\nMQTT topic: ebusd2"]
-        Adapter2["eBUS Adapter #2\n192.168.1.147"]
-        Relay2["ESP реле #2\n(NO контакт)"]
+        ebusd2["ebusd #2 — topic: ebusd2"]
+        Adapter2["eBUS Adapter #2 — 192.168.1.147"]
+        Relay2["ESP реле #2 — NO контакт"]
         VE2["eloBLOCK #2"]
         ebusd2 --> Adapter2 --> VE2
         Relay2 -- "сухой контакт" --> VE2
