@@ -12,13 +12,14 @@
 4. [Установка и настройка ebusd](#ebusd)
 5. [Конфигурационные файлы: как это работает](#конфиги)
 6. [Котёл Vaillant eloBLOCK: электрические особенности](#eloblock)
-7. [Котёл Vaillant atmoTEC: газовые особенности](#atmotec)
+7. [Котёл Vaillant atmoTEC plus: газовые особенности](#atmotec)
 8. [MQTT и интеграция с Home Assistant](#mqtt)
 9. [Управление мощностью через сухой контакт + ESPHome](#мощность)
 10. [Автоматизация отопления](#автоматизация)
 11. [Каскадное подключение котлов](#каскад)
 12. [Диагностика ошибок](#диагностика)
 13. [Итоги и планы](#итоги)
+14. [Приложение: Схема регистров eloBLOCK](#приложение)
 
 ---
 
@@ -112,7 +113,7 @@ graph LR
         SS2[SS]
         V2[VCC]
         G2[GND]
-        RJ[🔌 RJ-45 → LAN]
+        RJ["🔌 RJ-45 → LAN"]
     end
     MOSI1 --- MOSI2
     MISO1 --- MISO2
@@ -167,17 +168,17 @@ services:
 Конфигурационный файл addon (`ebusd.txt`):
 
 ```ini
-scanconfig: true
+scanconfig: full
 loglevel_all: notice
 mqtttopic: ebusd
 mqttint: /config/ebusd/mqtt-hassio.cfg
 mqttjson: true
 scan: full
-network_device: 192.168.1.142:9999
+network_device: 192.168.1.142:9999  # замените на IP вашего адаптера
 mode: ens
-latency: 15
+latency: 10
 acquireretries: 10
-receivetimeout: 2500
+receivetimeout: 200
 sendretries: 5
 scanretries: 10
 accesslevel: "*"
@@ -299,11 +300,11 @@ r,,CurrentPower,d.108 Power now,,,,E601,,,UIN,,kW,Current power output
 
 ---
 
-## 7. Котёл Vaillant atmoTEC: газовые особенности {#atmotec}
+## 7. Котёл Vaillant atmoTEC plus: газовые особенности {#atmotec}
 
 ### Модель: VUW (PROD=0010015251, SW0407, HW0903)
 
-atmoTEC — атмосферный газовый котёл **без CO-датчика** (в отличие от atmoTEC PLUS). Поэтому все параметры группы `e.04–e.19` (SMGV, CO-концентрация, калибровка горелки) недоступны на этой версии прошивки и закомментированы.
+atmoTEC plus — атмосферный газовый котёл. Несмотря на название «plus», в данной версии прошивки (SW0407/HW0903) **отсутствует CO-датчик** (atmoGuard). Поэтому все параметры группы `e.04–e.19` (SMGV, CO-концентрация, калибровка горелки) недоступны на этой версии прошивки и закомментированы.
 
 ### Ключевые параметры atmoTEC
 
@@ -416,7 +417,7 @@ graph LR
     B["Ограничение = 6 кВт (D.153)"] --> C
     C{"Сухой контакт / D.152"}
     C -- "Разомкнут — реле OFF, default" --> D["✅ Полная мощность 14 кВт"]
-    C -- "Замкнут — реле ON, команда HA" --> E["⚡ Снижено: 14 − 6 = 8 кВт"]
+    C -- "Замкнут — реле ON, команда HA" --> E["⚡ Снижено: 14 - 6 = 8 кВт"]
 ```
 
 > ⚠️ При ограничении «по всем фазам» на котле 18 кВт шаг кратен 6 кВт (6/12/18 кВт).
@@ -473,8 +474,8 @@ wifi:
 switch:
   - platform: gpio
     pin: GPIO0
-    name: "${devicename} switch"
-    inverted: true  # active-low GPIO: relay activates when GPIO goes LOW
+    name: "${devicename} power limit"  # ON = limit active (NO closed), OFF = full power (NO open)
+    inverted: true  # active-low GPIO: relay activates when GPIO0 goes LOW
 ```
 
 ### Автоматизация ограничения мощности
@@ -486,17 +487,18 @@ switch:
 automation:
   - alias: "Ограничение мощности котла"
     trigger:
-      - platform: state
+      # Числовой сенсор мощности — срабатываем при превышении 100 Вт
+      - platform: numeric_state
         entity_id: sensor.washing_machine_power
-        to: "on"
+        above: 100
     action:
       - service: switch.turn_on   # активируем ограничение (NO замыкается)
         target:
-          entity_id: switch.vaillant_power_switch
+          entity_id: switch.vaillant_power_power_limit
       - delay: "00:30:00"         # 30 минут ограничения
       - service: switch.turn_off  # снимаем ограничение (NO размыкается)
         target:
-          entity_id: switch.vaillant_power_switch
+          entity_id: switch.vaillant_power_power_limit
 ```
 
 ---
@@ -700,7 +702,7 @@ docker exec ebusd ebusctl i
 
 ---
 
-## Приложение: Схема регистров eloBLOCK по группам
+## Приложение: Схема регистров eloBLOCK по группам {#приложение}
 
 ```
 Уровень диагностики 1 (d.00–d.47):

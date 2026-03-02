@@ -10,16 +10,20 @@
 # ##### dia level 1 #####,,,,,,,,,,,,,
 r,,Statenumber,Statenumber_DK,,,,"AB00",,,UCH,,,status number
 r,,StatusList,StatusList_DK,,,,"1101",,,HEX:10,,,Statustexte ergänzen
-r;wi,,PartloadHcKW,d.00 heating partload,,,,"0704",,,power,,,Heating part load
+# PartloadHcKW: returns ERR: invalid position on SW0407/HW0903
+#r;wi,,PartloadHcKW,d.00 heating partload,,,,"0704",,,power,,,Heating part load
 r;wi,,WPPostrunTime,d.01 central heating overruntime,,,,"F703",,,minutes0,,,water pump overrun time for heating mode
-r;wi,,BlockTimeHcMax,d.02 Max blocking time CH,,,,"0904",,,minutes0,,,max. burner anti cycling period at 20°C Flow temperature setpoint
+# BlockTimeHcMax: returns ERR: invalid position on SW0407/HW0903
+#r;wi,,BlockTimeHcMax,d.02 Max blocking time CH,,,,"0904",,,minutes0,,,max. burner anti cycling period at 20°C Flow temperature setpoint
 r,,HwcTemp,d.03 Temp DHW,,,,"1600",,,tempsensor,,,hot water flow temperature (combination boiler only)
 r,,StorageTemp,d.04 Temp storage / she,,,,"1700",,,tempsensor,,,current temperature for warm start sensor (combination boiler only) Current storage tank sensor (system boiler only)
 r,,FlowTempDesired,d.05 flow/return setpoint,,,,"3900",,,temp,,,Flow temperature target value or return target value when return regulation is set
-r,,HwcTempDesired,d.06 DHW setpoint,,,,"EA03",,,temp,,,Hot water temperature target value
+# HwcTempDesired: returns ERR: invalid position on SW0407/HW0903
+#r,,HwcTempDesired,d.06 DHW setpoint,,,,"EA03",,,temp,,,Hot water temperature target value
 r,,StorageTempDesired,d.07 Storage setpoint,,,,"0400",,,temp,,,"Warm start temperature value (combination boiler plus only), Storage temperature target value (system boiler only)"
 ##r,,ACRoomthermostat,d.08 Room thermostat 230 V,,,,"2A00",,,onoff,,,External controls heat demand (Clamp 3-4)
-r,,ExtFlowTempDesiredMin,d.09 ext flowsetpoint,,,,"6E04",,,temp,,,minimum out of Kl.7 and eBus flow setpoint
+# ExtFlowTempDesiredMin: returns ERR: invalid position on SW0407/HW0903
+#r,,ExtFlowTempDesiredMin,d.09 ext flowsetpoint,,,,"6E04",,,temp,,,minimum out of Kl.7 and eBus flow setpoint
 r,,WP,d.10 Central heating pump,,,,"4400",,,onoff,,,internal heating pump
 r,,extWP,d.11 external pump,,,,"3F00",,,onoff,,,External heating pump
 r,,Storageloadpump,d.12 storage load pump,,,,"9E00",,,percent0,,,tank load pump demand
@@ -58,21 +62,25 @@ r,,CounterStartattempts1,d.68 ignition attempts 1,,,,6E00,,,temp0,,,unsuccessful
 r,,CounterStartattempts2,d.69 ignition attempts 2,,,,6F00,,,temp0,,,unsuccessfull ignitions in the second attempt
 r;wi,,ValveMode,d.70 diverter valve position,,,,2A04,,,UCH,,,"Set diverter valve position 0=normal mode, 1=middle position (GB), 2=permanent CH position"
 r;wi,,FlowsetHcMax,d.71 Max value flow temp,,,,A500,,,temp,,,Adjustment of maximum central heating setpoint range (maximum endposition of potmeter)
-r;wi,,HwcPostrunTime,d.72 postrun time storage,,,,1104,,,UCH,-10,s,"Pump overrun time after charging a storage (charging through C1-C2, external/internal tank with tank sensor)"
+# HwcPostrunTime: returns ERR: invalid position on SW0407/HW0903
+#r;wi,,HwcPostrunTime,d.72 postrun time storage,,,,1104,,,UCH,-10,s,"Pump overrun time after charging a storage (charging through C1-C2, external/internal tank with tank sensor)"
 r;wi,,WarmstartOffset,d.73 Warmstart offset,,,,1004,,,temp,,,Offset for warm start target value (combination boilers only)
 [SW>=413]r;wi,,APCLegioProtection,d.74 APC_LegioProtection,,,,9704,,,UCH,,,Legionella protection for actoSTORE
 r;wi,,StorageLoadTimeMax,d.75 Max load time storage,,,,1204,,,minutes0,,,Maximum charging time for a storage without own control
 
 r,,CodingResistor,d.76 SD_CodingResistor_DK,,,,"9200",,,HEX:3,,,boiler identification resistor
-r;wi,,PartloadHwcKW,d.77 hot water partload,,,,0804,,,power,,,storage part load (storage charging capacity limit)
-r;wi,,FlowsetHwcMax,d.78 Max value flow temp storage,,,,0F04,,,temp,,,storage charging temperature limit (target flow temperature in storage mode)
+# PartloadHwcKW: returns ERR: invalid position on SW0407/HW0903
+#r;wi,,PartloadHwcKW,d.77 hot water partload,,,,0804,,,power,,,storage part load (storage charging capacity limit)
+# FlowsetHwcMax: returns ERR: invalid position on SW0407/HW0903
+#r;wi,,FlowsetHwcMax,d.78 Max value flow temp storage,,,,0F04,,,temp,,,storage charging temperature limit (target flow temperature in storage mode)
 r,,HcHours,d.80 operating hours CH,,,,2800,,,hoursum2,,,central heating operation hours
 r,,HwcHours,d.81 Operating hours DHW,,,,2200,,,hoursum2,,,water heating operation hours
 r,,HcStarts,d.82 Burner starts heating,,,,2900,,,UIN,-100,,cycles in heating mode
 r,,HwcStarts,d.83 Burner starts DHW,,,,2300,,,UIN,-100,,Cycles in hot water operation
 r;wi,,AntiCondensValue,d.85 Minimal power to avoid condensation,,,,EC00,,,power,,,Minimal power to avoid condensation
 r;wi,,SpecialAdj,d.88 SpecialAdj,,,,EB00,,,UCH,,,"switching on threshold for recognition of water tapping0 = 1,5 l/min and no delay, 1 = 3,7 l/min and 2s delay"
-r,,EBusHeatcontrol,d.90 Digital control recognized,,,,"0004",,,yesno,,,Digital regulator status
+# EBusHeatcontrol: returns ERR: invalid position on SW0407/HW0903
+#r,,EBusHeatcontrol,d.90 Digital control recognized,,,,"0004",,,yesno,,,Digital regulator status
 r,,dcfState,d.91 Status DCF 77,,,,"6900",,,dcfstate,,,DCF status
 [SW>=413]r,,APCComStatus,d.92 APC_ComStatus_DK,,,,"6200",,,UCH,,,actoSTORE communication status
 # ##### expert level #####,,,,,,,,,,,,,
@@ -128,8 +136,9 @@ r,,VortexSensorFaultCounter,VortexSensorFaultCounter_DK,,,,"4B01",,,UCH,,,
 r,,VortexFlowCheckFault,VortexFlowCheckFault_DK,,,,"4C01",,,onoff,,,
 r,,VortexFlowCheckFaultCounter,VortexFlowCheckFaultCounter_DK,,,,"4D01",,,UCH,,,
 r,,SMGVCurrentPos,SMGV_CurrentPos_DK,,,,"7C01",,,SIN,,,
-r,,PredSourcePressureRefPressureCounter,Pred_AirPressure_RefPressureCounter_DK,,,,"7F01",,,UCH,,,
-r,,PredSourcePressureRefPressureSum,Pred_AirPressure_RefPressureSum_DK,,,,"8001",,,UIN,,,
+# PredSourcePressureRefPressure*: returns ERR: invalid position on SW0407/HW0903
+#r,,PredSourcePressureRefPressureCounter,Pred_AirPressure_RefPressureCounter_DK,,,,"7F01",,,UCH,,,
+#r,,PredSourcePressureRefPressureSum,Pred_AirPressure_RefPressureSum_DK,,,,"8001",,,UIN,,,
 r;ws,,SRFLIDEMode,SR_FLIDE_Mode_DK,,,,"8101",,,UCH,,,
 #r,,COSensorSNR,CO_Sensor_SNR,,,,"AF01",,,HEX:7,,,
 r,,WaterPressure,Waterpressure,,,,"0200",,,presssensor,,,value of waterpressure-sensor
@@ -175,18 +184,23 @@ r,,TimerInputHc,TimerInputCH_DK,,,,"DE00",,,onoff,,,timer input (block heatdeman
 r,,FanMinSpeedOperation,FanMinSpeedOperation,,,,"DF00",,,UIN,,1/min,Minimum Fan speed of the appliance
 r,,FanMaxSpeedOperation,FanMaxSpeedOperation,,,,"E000",,,UIN,,1/min,Maximum Fan speed of the appliance
 r,,ExternGasvalve,ExternGasvalve_DK,,,,"E400",,,onoff,,,external gasvalve activated
-r,,DCFTimeDate,DCF_TimeDate_DK,,,,"E500",,,HEX:8,,,DCF Time / date stamp struct { uchar sec; uchar min; uchar std; uchar tag; uchar mon; uchar wtg; uchar jah; } Tdcf77_time;
-r,,FlowSetPotmeter,FlowSetPotmeter,,,,"F003",,,temp,,,flow setpoint potentiometer
-r,,HwcSetPotmeter,DHWSetPotmeter,,,,"F103",,,temp,,,DHW setpoint potentiometer
+# DCFTimeDate: returns ERR: invalid position on SW0407/HW0903 (no DCF antenna)
+#r,,DCFTimeDate,DCF_TimeDate_DK,,,,"E500",,,HEX:8,,,DCF Time / date stamp struct { uchar sec; uchar min; uchar std; uchar tag; uchar mon; uchar wtg; uchar jah; } Tdcf77_time;
+# FlowSetPotmeter: returns ERR: invalid position on SW0407/HW0903
+#r,,FlowSetPotmeter,FlowSetPotmeter,,,,"F003",,,temp,,,flow setpoint potentiometer
+# HwcSetPotmeter: returns ERR: invalid position on SW0407/HW0903
+#r,,HwcSetPotmeter,DHWSetPotmeter,,,,"F103",,,temp,,,DHW setpoint potentiometer
 r,,HwcSwitch,DHWSwitch,,,,"F303",,,onoff,,,DHW on/off
 r,,ProductionByte,ProductionByte,,,,"3E04",,,UCH,,,
 r,,SerialNumber,SerialNumber,,,,"3F04",,,HEX:8,,,serial number of AI
 # ##### dia level 2 #####,,,,,,,,,,,,,
 r;wi,,OptionRelais,d.26 OptionRelais_DK,,,,"B800",,,UCH,1=circulationpump;2=extheatingpump;3=storagechargingpump;4=fluegasflapextractorhood;5=externalgasvalve;6=externalerrormessage;7=solarpump;8=remotecontrol,,Option relais function
-r;wi,,FanSpeedOffsetMin,d.50 MinFanSpeedOffset,,,,"2404",,,SIN,,1/min,Offset for minimum fan speed
-r;wi,,FanSpeedOffsetMax,d.51 MaxFanSpeedOffset,,,,"2504",,,SIN,,1/min,Offset for maximum fan speed
+# FanSpeedOffsetMin/Max: returns ERR: invalid position on SW0407/HW0903 (fan parameters — turboTEC only)
+#r;wi,,FanSpeedOffsetMin,d.50 MinFanSpeedOffset,,,,"2404",,,SIN,,1/min,Offset for minimum fan speed
+#r;wi,,FanSpeedOffsetMax,d.51 MaxFanSpeedOffset,,,,"2504",,,SIN,,1/min,Offset for maximum fan speed
 r,,maxIgnitiontime,d.65 Max ignition time,,,,"2C00",,,UCH,10,s,maximum ignition time
-r;wi,,HoursTillService,d.84 Hours till next service,,,,"2004",,,hoursum2,,,Maintenance indicator:Number of hours until the next maintenance
+# HoursTillService: returns ERR: invalid position on SW0407/HW0903
+#r;wi,,HoursTillService,d.84 Hours till next service,,,,"2004",,,hoursum2,,,Maintenance indicator:Number of hours until the next maintenance
 r;wi,,ServiceMode,d.86 ServiceMode_DK,,,,"CB00",,,onoff,,,Counter-activation for predictive maintenance
 r;wi,,GasType,d.87 GasType_DK,,,,"FE00",,,UCH,,,"0=natural gas, 1 = liquid gas 50mbar, 2=liquid gas 30mbar"
 r;wi,,StartOffset,d.89 StartOffset_DK,,,,"0D01",,,percents,,,value of gas-offset during ignition
@@ -200,28 +214,33 @@ r;wi,,SetFactoryValues,d.96 Set factory settings,,,,"6804",,,yesno,,,Factory set
 
 r,,Faultlist,Faultlist_DK,,,,"2600",,,HEX:10,,,
 # ##### maintenance data #####,,,,,,,,,,,,,
-r,,PredFanPWMDevThreshold,Pred_FanPWM_DevThreshold_DK,,,,"3501",,,UCH,,,
-r,,PredFanPWMSwitchingPoint,Pred_FanPWM_SwitchingPoint_DK,,,,"3601",,,UIN,,,
-r,,PredFanPWMRefPWMcounter,Pred_FanPWM_RefPWMcounter_DK,,,,"3701",,,UCH,,,
-r,,PredFanPWMRefPWMsum,Pred_FanPWM_RefPWMsum_DK,,,,"3801",,,UIN,,,
-r,,PredFanPWMPredCounter,Pred_FanPWM_PredCounter_DK,,,,"3901",,,UIN;UIN;UIN,,,
-r,,PredCOsensorSwitchingPoint,Pred_COsensor_SwitchingPoint_DK,,,,"3A01",,,UIN,,,
-r,,PredCOsensorPredCounter,Pred_COsensor_PredCounter,,,,"3B01",,,UIN;UIN;UIN,,,
-r,,PredIgnitionSwitchingPoint,Pred_Ignition_SwitchingPoint_DK,,,,"3C01",,,UIN,,,
-r,,PredIgnitionPredCounter,Pred_Ignition_PredCounter_DK,,,,"3D01",,,UIN;UIN;UIN,,,
-r,,PredCombustionDecrementTime,Pred_Combustion_DecrementTime_DK,,,,"3E01",,,UCH,,,
-r,,PredCombustionSwitchingPoint,Pred_Combustion_SwitchingPoint_DK,,,,"3F01",,,UIN,,,
-r,,PredCombustionPredCounter,Pred_Combustion_PredCounter_DK,,,,"4001",,,UIN;UIN;UIN,,,
-r,,PredSourcePressureDevThreshold,Pred_AirPressure_DevThreshold_DK,,,,"4101",,,UCH,,,
-r,,PredSourcePressureSwitchingPoint,Pred_AirPressure_SwitchingPoint_DK,,,,"4201",,,UIN,,,
-r,,PredSourcePressurePredCounter,Pred_AirPressure_PredCounter_DK,,,,"4301",,,UIN;UIN;UIN,,,
-r,,PredWaterflowDevThreshold,Pred_Waterflow_DevThreshold_DK,,,,"4401",,,UCH,,,
-r,,PredWaterflowSwitchingPoint,Pred_Waterflow_SwitchingPoint_DK,,,,"4501",,,UIN,,,
-r,,PredWaterpressureMinPressure,Pred_Waterpressure_MinPressure_DK,,,,"4601",,,UIN,,,
-r,,PredWaterpressureMaxPressure,Pred_Waterpressure_MaxPressure_DK,,,,"4701",,,UIN,,,
-r,,PredWaterpressureSwitchingPoint,Pred_Waterpressure_SwitchingPoint_DK,,,,"4801",,,UIN,,,
-r,,PredStatusFlags,Pred_StatusFlags_DK,,,,"7D01",,,ULG,,,
-r,,PredConditionFlags,Pred_ConditionFlags,,,,"7E01",,,ULG,,,
+# --- Pred* parameters: return ERR: invalid position on SW0407/HW0903 ---
+# PredFanPWM* — requires fan hardware (turboTEC / atmoTEC PLUS with fan), not available on base atmoTEC
+# PredCOsensor* — requires CO sensor hardware (atmoTEC PLUS with atmoGuard), not available on SW0407
+# PredIgnition*, PredCombustion*, PredSourcePressure*, PredWaterflow*, PredWaterpressure* — all ERR on SW0407
+# Uncomment only if your firmware/hardware version supports these (verify via 'ebusctl grab result all')
+#r,,PredFanPWMDevThreshold,Pred_FanPWM_DevThreshold_DK,,,,"3501",,,UCH,,,
+#r,,PredFanPWMSwitchingPoint,Pred_FanPWM_SwitchingPoint_DK,,,,"3601",,,UIN,,,
+#r,,PredFanPWMRefPWMcounter,Pred_FanPWM_RefPWMcounter_DK,,,,"3701",,,UCH,,,
+#r,,PredFanPWMRefPWMsum,Pred_FanPWM_RefPWMsum_DK,,,,"3801",,,UIN,,,
+#r,,PredFanPWMPredCounter,Pred_FanPWM_PredCounter_DK,,,,"3901",,,UIN;UIN;UIN,,,
+#r,,PredCOsensorSwitchingPoint,Pred_COsensor_SwitchingPoint_DK,,,,"3A01",,,UIN,,,
+#r,,PredCOsensorPredCounter,Pred_COsensor_PredCounter,,,,"3B01",,,UIN;UIN;UIN,,,
+#r,,PredIgnitionSwitchingPoint,Pred_Ignition_SwitchingPoint_DK,,,,"3C01",,,UIN,,,
+#r,,PredIgnitionPredCounter,Pred_Ignition_PredCounter_DK,,,,"3D01",,,UIN;UIN;UIN,,,
+#r,,PredCombustionDecrementTime,Pred_Combustion_DecrementTime_DK,,,,"3E01",,,UCH,,,
+#r,,PredCombustionSwitchingPoint,Pred_Combustion_SwitchingPoint_DK,,,,"3F01",,,UIN,,,
+#r,,PredCombustionPredCounter,Pred_Combustion_PredCounter_DK,,,,"4001",,,UIN;UIN;UIN,,,
+#r,,PredSourcePressureDevThreshold,Pred_AirPressure_DevThreshold_DK,,,,"4101",,,UCH,,,
+#r,,PredSourcePressureSwitchingPoint,Pred_AirPressure_SwitchingPoint_DK,,,,"4201",,,UIN,,,
+#r,,PredSourcePressurePredCounter,Pred_AirPressure_PredCounter_DK,,,,"4301",,,UIN;UIN;UIN,,,
+#r,,PredWaterflowDevThreshold,Pred_Waterflow_DevThreshold_DK,,,,"4401",,,UCH,,,
+#r,,PredWaterflowSwitchingPoint,Pred_Waterflow_SwitchingPoint_DK,,,,"4501",,,UIN,,,
+#r,,PredWaterpressureMinPressure,Pred_Waterpressure_MinPressure_DK,,,,"4601",,,UIN,,,
+#r,,PredWaterpressureMaxPressure,Pred_Waterpressure_MaxPressure_DK,,,,"4701",,,UIN,,,
+#r,,PredWaterpressureSwitchingPoint,Pred_Waterpressure_SwitchingPoint_DK,,,,"4801",,,UIN,,,
+#r,,PredStatusFlags,Pred_StatusFlags_DK,,,,"7D01",,,ULG,,,
+#r,,PredConditionFlags,Pred_ConditionFlags,,,,"7E01",,,ULG,,,
 r,,TempGradientFailure,TempGradientFailure_DK,,,,"1100",,,temp0,,,Number of cut offs of the boilers cause of to high gradient (S.54)
 r,,TempDiffBlock,TempDiffBlock_DK,,,,"1200",,,temp0,,,Number of modulationblocking of the boilers cause of to high/incorrect difference of flow/return temperatures
 r,,TempDiffFailure,TempDiffFailure_DK,,,,"1300",,,temp0,,,Number of cut offs of the boilers cause of to high/incorrect differences of flow/return temperatures
