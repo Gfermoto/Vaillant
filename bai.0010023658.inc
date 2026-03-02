@@ -156,8 +156,10 @@ r;wi,,MaxPower,d.104 Max power,,,,A201,,,UCH,,kW,Max configured power output
 # Use for Home Assistant Energy Dashboard (state_class: total_increasing)
 r,,TotalEnergy,d.105 Energy total,,,,B301,,,ULG,,kWh,Total energy consumption (kWh)
 
-# d.106: ElementHours — total operating time of heating elements (hoursum2, confirmed working)
-r,,ElementHours,d.106 Elements runtime,,,,C401,,,hoursum2,,,Heating elements total operating hours
+# d.106: ElementHours — total operating time of heating elements.
+# Type: hoursum2 — by analogy with gas boiler HcHours (2800), not independently verified on eloBLOCK.
+# ⚠️ NOT VERIFIED in any public source for 0010023658.
+r,,ElementHours,d.106 Elements runtime,,,,C401,,,hoursum2,,,Heating elements total operating hours (type unverified)
 
 # d.107: OverTempStatus — overtemperature protection trigger value (temp type)
 r,,OverTempStatus,d.107 Overtemp status,,,,D501,,,temp,,,Over-temperature protection status
@@ -165,12 +167,16 @@ r,,OverTempStatus,d.107 Overtemp status,,,,D501,,,temp,,,Over-temperature protec
 # d.108: CurrentPower — real-time power output.
 # Note: Official manual D.155 also describes "current output (continuously updated)".
 # D.108 (E601) may be the eBUS-readable value; D.155 may be display-only.
-# Address E601 confirmed present in bus grab. Type UIN pending verification.
-r,,CurrentPower,d.108 Power now,,,,E601,,,UIN,,kW,Current real-time power output (verify: may need UCH)
+# Address E601 confirmed present in bus grab.
+# Type: HEX:2 — applied based on @Akeebaby (GitHub ebusd-configuration issue #254, model 0010023684 HW7503 SW0108).
+# ⚠️ NOT VERIFIED on 0010023658 SW0109. @Akeebaby also commented this out as "total error" on their unit.
+# Alternative: try UCH (1 byte) if HEX:2 returns ERR.
+r,,CurrentPower,d.108 Power now,,,,E601,,,HEX:2,,kW,Current real-time power output (unverified type; source: @Akeebaby issue #254)
 
 # --- Power limiter via dry contact (from official manual D.149, D.152-D.155) ---
 # IMPORTANT: D.152 and D.153 allow SOFTWARE power limiting without dry contact hardware!
-# These parameters are in official manual but eBUS register addresses are UNKNOWN.
+# eBUS register addresses searched across ALL public sources (GitHub issues/PRs/discussions,
+# HA Community, OpenEnergyMonitor, ioBroker, Reddit, ManualsLib, ab-log.ru, 4PDA) — NOT FOUND.
 # Method to find: use 'ebusctl grab result all' while changing D.152/D.153 on boiler display.
 #
 # D.149 — Pump fault detail (fault F.075 explanation):
