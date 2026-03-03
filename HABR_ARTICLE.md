@@ -40,21 +40,7 @@
 
 ## 2. Архитектура решения {#архитектура}
 
-![Архитектура интеграции котла Vaillant с Home Assistant](images/habr_architecture.png)
-
-```mermaid
-graph LR
-    Boiler["🔥 Котёл Vaillant"]
-    Adapter["📡 eBUS Adapter Shield v5"]
-    Ebusd["⚙️ ebusd daemon"]
-    MQTT["📨 MQTT Broker"]
-    HA["🏠 Home Assistant"]
-
-    Boiler -- "eBUS 2-wire" --> Adapter
-    Adapter -- "TCP :9999 ENS" --> Ebusd
-    Ebusd -- "MQTT publish" --> MQTT
-    MQTT -- "MQTT Discovery" --> HA
-```
+![Architecture: Vaillant boiler integration with Home Assistant](images/habr_architecture.png)
 
 **Компоненты:**
 
@@ -84,11 +70,7 @@ graph LR
 
 Шина eBUS — это два провода, полярность **не имеет значения**. Подключаться можно в любой точке цепи параллельно другим устройствам (термостатам, модулям расширения).
 
-```mermaid
-graph LR
-    A["🔥 Котёл — клемма eBUS +/-"] -- "2 провода, полярность не важна" --> B["📡 eBUS Adapter Shield v5"]
-    B -- "WiFi / Ethernet TCP:9999" --> C["🌐 Сеть LAN"]
-```
+![Boiler eBUS connection to adapter](images/habr_boiler_connection.png)
 
 ### Модуль USR-ES1 (опционально)
 
@@ -96,32 +78,7 @@ graph LR
 
 **Схема подключения USR-ES1 к Shield v5:**
 
-```mermaid
-graph LR
-    subgraph Shield_v5["eBUS Shield v5"]
-        MOSI1[MOSI]
-        MISO1[MISO]
-        SCK1[SCK]
-        CS1[CS]
-        V1[3.3V]
-        G1[GND]
-    end
-    subgraph USR_ES1["USR-ES1 (W5500)"]
-        MOSI2[MOSI]
-        MISO2[MISO]
-        SCK2[SCK]
-        SS2[SS]
-        V2[VCC]
-        G2[GND]
-        RJ["🔌 RJ-45 → LAN"]
-    end
-    MOSI1 --- MOSI2
-    MISO1 --- MISO2
-    SCK1 --- SCK2
-    CS1 --- SS2
-    V1 --- V2
-    G1 --- G2
-```
+![USR-ES1 SPI wiring to eBUS Shield v5](images/habr_usr_es1_wiring.png)
 
 ---
 
@@ -414,16 +371,9 @@ homeassistant:
 
 ![Схема подключения реле ESP-01S к котлу eloBLOCK](images/habr_relay_wiring.png)
 
-eloBLOCK имеет сухой контакт (ESCO-контакт, клеммы котла) для ограничения мощности. Принцип: **разомкнутый** контакт — полная мощность, **замкнутый** — ограничение активно.
+eloBLOCK имеет сухой контакт (ESCO/X2, клеммы котла) для ограничения мощности. Принцип: **разомкнутый** контакт — полная мощность, **замкнутый** — ограничение активно (S.174 Energy saving). Согласно мануалу Vaillant 0020265768_01, стр. 10 и 19.
 
-```mermaid
-graph LR
-    A["MaxPower = 14 кВт (D.104)"] --> C
-    B["Ограничение = 6 кВт (D.153)"] --> C
-    C{"Сухой контакт / D.152"}
-    C -- "Разомкнут — реле OFF, default" --> D["✅ Полная мощность 14 кВт"]
-    C -- "Замкнут — реле ON, команда HA" --> E["⚡ Снижено: 14 - 6 = 8 кВт"]
-```
+![Power limiting logic: dry contact states](images/habr_power_limit_logic.png)
 
 > ⚠️ При ограничении «по всем фазам» на котле 18 кВт шаг кратен 6 кВт (6/12/18 кВт).
 
@@ -431,22 +381,7 @@ graph LR
 
 Подключаем **NO + COM**. При отключении питания ESP реле обесточивается → NO разомкнут → котёл на полной мощности (безопасный default).
 
-```mermaid
-graph LR
-    subgraph ESP01S["ESP-01S Relay Module"]
-        GPIO0["GPIO0 (inverted: true)"]
-        COM["COM"]
-        NO["✅ NO — подключить"]
-        NC["NC — не подключать"]
-    end
-    subgraph Boiler["Vaillant eloBLOCK"]
-        A["Клемма A сухого контакта"]
-        B["Клемма B сухого контакта"]
-    end
-    COM --> A
-    NO --> B
-    GPIO0 -. "управление" .-> COM
-```
+![ESP-01S relay wiring: NO and COM to boiler dry contact](images/habr_esp_relay.png)
 
 **Логика работы:**
 
@@ -514,19 +449,9 @@ automation:
 
 **Рекомендуемая схема для зонального отопления:**
 
-```mermaid
-graph TD
-    Thermostat["🌡️ Термостаты WThermostatBeca"]
-    CCT["🎛️ Beok CCT-10 — контроллер пола"]
-    Boiler["🔥 Котёл Vaillant — сухой контакт OR"]
-    Rad["🔧 Радиаторы + термоголовки"]
-    Floor["♨️ Тёплый пол + актуаторы NC"]
+Термостаты и головки тёплого пола подключаются **к контроллеру пола** (Beok CCT-10), а не к котлу. Контроллер управляет рециркуляционным насосом и запросом тепла у котла (сухой контакт OR). В контуре тёплого пола — свой байпас.
 
-    Thermostat -- "запрос тепла" --> Boiler
-    CCT -- "запрос тепла" --> Boiler
-    Boiler --> Rad
-    Boiler --> Floor
-```
+![Zonal heating: thermostats and floor headers to controller; controller to pump and boiler](images/habr_zonal_heating.png)
 
 **Важно:** У котлов Vaillant **нет байпаса**. Хотя бы один радиатор должен быть открыт, пока работает котёл. Достигается программной калибровкой термостатических головок.
 
@@ -552,33 +477,7 @@ blueprint:
 
 При каскадировании двух eloBLOCK есть ограничения:
 
-```mermaid
-graph LR
-    HA["🏠 Home Assistant"]
-
-    subgraph Boiler1["Котёл 1"]
-        ebusd1["ebusd #1 — topic: ebusd1"]
-        Adapter1["eBUS Adapter #1 — 192.168.1.146"]
-        Relay1["ESP реле #1 — NO контакт"]
-        VE1["eloBLOCK #1"]
-        ebusd1 --> Adapter1 --> VE1
-        Relay1 -- "сухой контакт" --> VE1
-    end
-
-    subgraph Boiler2["Котёл 2"]
-        ebusd2["ebusd #2 — topic: ebusd2"]
-        Adapter2["eBUS Adapter #2 — 192.168.1.147"]
-        Relay2["ESP реле #2 — NO контакт"]
-        VE2["eloBLOCK #2"]
-        ebusd2 --> Adapter2 --> VE2
-        Relay2 -- "сухой контакт" --> VE2
-    end
-
-    HA -- "MQTT" --> ebusd1
-    HA -- "MQTT" --> ebusd2
-    HA --> Relay1
-    HA --> Relay2
-```
+![Cascade: two eloBLOCK boilers with separate ebusd, adapters, and relays](images/habr_cascade.png)
 
 > ⚠️ Сухие контакты **нельзя соединять параллельно** — иначе ограничение применится к обоим котлам. Каждый котёл — отдельный адаптер, отдельный контейнер ebusd, отдельное реле.
 
