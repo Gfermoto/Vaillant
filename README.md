@@ -34,10 +34,12 @@
 | Репозиторий ebusd | [john30/ebusd](https://github.com/john30/ebusd) |
 | Пример Docker Compose | [docker-compose.yml](https://github.com/Gfermoto/Vaillant/blob/main/docker-compose.yml) |
 | Дополнение HA | [LukasGrebe/ha-addons](https://github.com/LukasGrebe/ha-addons) |
-| Пример настроек ebusd | [ebusd.txt](https://github.com/Gfermoto/Vaillant/blob/main/ebusd.txt) |
+| Пример настроек ebusd (классический формат addon) | [ebusd.txt](https://github.com/Gfermoto/Vaillant/blob/main/ebusd.txt) |
+| **Дополнение HA eBUSd 26.1+** (миграция, локальный configpath, MQTT) | [HA_ADDON_EBUSD_26.md](https://github.com/Gfermoto/Vaillant/blob/main/HA_ADDON_EBUSD_26.md) |
+| Пример `commandline_options` для 26.x | [ebusd-addon-26.example.txt](https://github.com/Gfermoto/Vaillant/blob/main/ebusd-addon-26.example.txt) |
 | Конфиги котлов | [john30/ebusd-configuration](https://github.com/john30/ebusd-configuration) |
 
-Для кастомных котлов — локальная копия конфигов и указание путей в настройках ebusd.
+Для кастомных котлов — локальная копия конфигов и указание путей в настройках ebusd. После обновления дополнения на **26.1+** обязательно прочитайте [HA_ADDON_EBUSD_26.md](HA_ADDON_EBUSD_26.md): иначе возможны циклы перезапуска, `unknown` в HA и ошибки загрузки шаблонов.
 
 ### 3. MQTT-брокер
 
@@ -55,6 +57,7 @@ Docker или дополнение HA; чаще всего уже есть в с
 
 - Закомментирован фильтр по имени сообщений: `(filter-name)`.
 - Включена публикация записываемых сообщений: `filter-direction = r|u|^w` — в HA попадает больше параметров.
+- В **`value_template`** для Discovery учтены и long JSON (`{"FlowTemp":{"value":42}}`), и short JSON (`{"FlowTemp":42}`) при `--mqttjson` — иначе сущности в HA могут быть **unknown** (ebusd 24+).
 
 ### `08.bai.csv`
 
@@ -74,7 +77,7 @@ Docker или дополнение HA; чаще всего уже есть в с
 - Закомментированы D.149, D.152–D.155 из мануала Vaillant (0020265768_01) — адреса eBUS пока не найдены.
 
 Открытые вопросы: [ebusd_eloBLOCK.log](https://github.com/Gfermoto/Vaillant/blob/main/ebusd_eloBLOCK.log).  
-Помощь по поиску адресов **D.152/D.153** (программное ограничение мощности без реле) приветствуется.
+Помощь по поиску адресов **D.152/D.153** (программное ограничение мощности без реле) приветствуется. Метод **`ebusctl grab result`** для смены параметров **на дисплее котла** обычно не подходит: сравнивайте **полный дамп регистров до и после** изменения D.152/D.153 (скрипты read-all, сервисные команды B509; см. [issue #3](https://github.com/Gfermoto/Vaillant/issues/3)).
 
 ### `bai.0010015251.inc` (atmoTEC)
 

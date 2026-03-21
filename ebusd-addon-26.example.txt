@@ -1,0 +1,9 @@
+--configpath=/config/ebusd-configuration/en
+--scanconfig=full
+--log=all:notice
+--mqtttopic=ebusd
+--pollinterval=30
+--latency=15
+--sendretries=5
+--scanretries=10
+--accesslevel=*

@@ -1,4 +1,9 @@
 # ebusd configuration for HASSio addon (LukasGrebe/ha-addons)
+# Формат YAML ниже подходит для дополнения eBUSd до ~25.1.
+#
+# С дополнения 26.1+ схема другая: commandline_options, каталог /addon_configs/…_ebusd/,
+# локальный --configpath к …/en. См. HA_ADDON_EBUSD_26.md и ebusd-addon-26.example.txt
+#
 # For Docker usage, see docker-compose.yml
 
 # Auto-pick CSV config files matching the initial scan result

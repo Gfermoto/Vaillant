@@ -72,7 +72,9 @@
 
 **Вариант 2: Home Assistant addon (HAOS)**  
 Установка: `Supervisor → Add-on Store` → репозиторий [LukasGrebe/ha-addons](https://github.com/LukasGrebe/ha-addons).  
-Пример конфигурации addon: [ebusd.txt](https://github.com/Gfermoto/Vaillant/blob/main/ebusd.txt).
+Пример конфигурации в **классическом** формате (дополнение до ~25.1): [ebusd.txt](https://github.com/Gfermoto/Vaillant/blob/main/ebusd.txt).
+
+С **дополнения 26.1+** изменилась схема настроек (`commandline_options`, каталог `/addon_configs/…`, локальный `--configpath`, ebusd 24+ и загрузка CSV по URL). Без локального набора файлов из [ebusd-configuration](https://github.com/john30/ebusd-configuration) и правильного пути к каталогу `en` возможны перезапуски и «неизвестные» сущности в MQTT. Пошагово: [HA_ADDON_EBUSD_26.md](https://github.com/Gfermoto/Vaillant/blob/main/HA_ADDON_EBUSD_26.md); пример опций: [ebusd-addon-26.example.txt](https://github.com/Gfermoto/Vaillant/blob/main/ebusd-addon-26.example.txt). Обновлённый [mqtt-hassio.cfg](https://github.com/Gfermoto/Vaillant/blob/main/mqtt-hassio.cfg) учитывает short/long JSON для Discovery.
 
 ### Конфигурационные файлы ebusd
 
@@ -272,7 +274,7 @@ eloBLOCK имеет сухой контакт (ESCO/X2, клеммы котла)
 - SetModeOverride — эмуляция термостата через eBUS (без внешнего железа)
 
 ⚠️ **Требует уточнения / помощи сообщества:**
-- Адреса eBUS для **D.152** (фаза) и **D.153** (уровень ограничения) — не найдены нигде. Метод: `ebusctl grab result all` до и после смены D.152 на дисплее котла
+- Адреса eBUS для **D.152** (фаза) и **D.153** (уровень ограничения) — в открытых источниках не найдены. Команда **`ebusctl grab result`** перехватывает неизвестный трафик на шине; смена параметров **только на дисплее** котла может не дать нужных пакетов для сравнения. Имеет смысл **снимать полное состояние (дамп регистров) до и после** изменения D.152/D.153 и сравнивать diff, либо использовать скрипты read-all и сервисные запросы (B509). Обсуждение: [issue #3](https://github.com/Gfermoto/Vaillant/issues/3).
 - `ActiveStages` (F001) — постоянно 0xC0=192 на VE14; значение не расшифровано
 - `OverTempStatus` (D501) — пассивный захват, масштаб ×10 (raw 1702 = 85.1°C)
 
@@ -296,11 +298,11 @@ eloBLOCK имеет сухой контакт (ESCO/X2, клеммы котла)
 | D.155 | Текущая мощность (дисплей) | Непрерывно обновляется |
 | D.093 | Вариант устройства | 0-7 = 6/9/12/14/18/21/24/28 кВт (насос HE); 8-15 = те же с 2-ступ. насосом |
 
-> **Критическая находка:** параметры D.152 и D.153 — это программный аналог физического сухого контакта! Если удастся определить их eBUS-адреса, управление мощностью котла станет полностью программным, без ESP-01S и реле. Метод поиска: `ebusctl grab result all` до и после изменения D.152 на дисплее котла.
+> **Критическая находка:** параметры D.152 и D.153 — это программный аналог физического сухого контакта! Если удастся определить их eBUS-адреса, управление мощностью котла станет полностью программным, без ESP-01S и реле. Поиск адресов — сравнение **полных снимков** состояния до/после (не полагаться только на `grab`), см. [issue #3](https://github.com/Gfermoto/Vaillant/issues/3).
 
 ### Куда двигаться дальше
 
-1. **Найти eBUS-адреса D.152/D.153** — метод: `ebusctl grab result all` до и после изменения параметра на дисплее котла. Это откроет возможность software power limiting
+1. **Найти eBUS-адреса D.152/D.153** — сравнение дампов регистров до/после или аналогичные методы (см. [issue #3](https://github.com/Gfermoto/Vaillant/issues/3)). Это откроет возможность software power limiting
 2. **Помочь с параметрами** — если у вас eloBLOCK или atmoTEC, поделитесь значениями неизвестных регистров через Issues
 3. **Миграция на TypeSpec** — ebusd v24+ поддерживает новый формат конфигов `.tsp`
 4. **Добавить hcmode** — управление режимами отопительного контура через B511 протокол
@@ -308,6 +310,7 @@ eloBLOCK имеет сухой контакт (ESCO/X2, клеммы котла)
 ### Полезные ссылки
 
 - [Репозиторий проекта](https://github.com/Gfermoto/Vaillant) — конфиги, примеры, полный код
+- [Миграция HA addon eBUSd 26+](https://github.com/Gfermoto/Vaillant/blob/main/HA_ADDON_EBUSD_26.md) — локальный configpath, MQTT, типичные ошибки
 - [ebusd wiki](https://github.com/john30/ebusd/wiki) — документация демона
 - [ebusd-configuration](https://github.com/john30/ebusd-configuration) — официальные конфиги котлов
 - [eBUS Adapter Shield v5](https://adapter.ebusd.eu/v5/index.en.html) — рекомендуемый адаптер
