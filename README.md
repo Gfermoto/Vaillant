@@ -39,7 +39,7 @@
 | Пример `commandline_options` для 26.x | [ebusd-addon-26.example.txt](https://github.com/Gfermoto/Vaillant/blob/main/ebusd-addon-26.example.txt) |
 | Конфиги котлов | [john30/ebusd-configuration](https://github.com/john30/ebusd-configuration) |
 
-Для кастомных котлов — локальная копия конфигов и указание путей в настройках ebusd. После обновления дополнения на **26.1+** обязательно прочитайте [HA_ADDON_EBUSD_26.md](HA_ADDON_EBUSD_26.md): иначе возможны циклы перезапуска, `unknown` в HA и ошибки загрузки шаблонов.
+Для кастомных котлов — локальная копия конфигов и указание путей в настройках ebusd. После обновления дополнения на **26.1+** обязательно прочитайте [HA_ADDON_EBUSD_26.md](https://github.com/Gfermoto/Vaillant/blob/main/HA_ADDON_EBUSD_26.md): иначе возможны циклы перезапуска, `unknown` в HA и ошибки загрузки шаблонов.
 
 ### 3. MQTT-брокер
 
