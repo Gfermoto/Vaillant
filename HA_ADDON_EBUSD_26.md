@@ -21,7 +21,7 @@
 | `invalid configPath URL (connect)` | Нет доступа к интернету из контейнера, ebusd тянет конфиги по HTTP | Локальный `--configpath=.../en` + полная копия [ebusd-configuration](https://github.com/john30/ebusd-configuration) |
 | `unable to load scan config 08: list files in vaillant ERR: element not found` | Указан путь `.../en/vaillant` вместо родителя | **`--configpath`** должен указывать на **`.../en`**, не на `vaillant` — подкаталог откроет сам ebusd |
 | `field type POWER` / `TEMP` при загрузке `.inc` | Нет `_templates.csv`, `broadcast.csv`, при необходимости `tem/` | См. структуру каталога ниже; типы задаются в шаблонах, не только в `.inc` |
-| Все сущности MQTT в HA — **unknown** | Short JSON без `.value` в шаблоне Discovery | Использовать [mqtt-hassio.cfg](https://github.com/Gfermoto/Vaillant/blob/main/mqtt-hassio.cfg) из репозитория [Vaillant](https://github.com/Gfermoto/Vaillant) (обновлённый `value_template`) |
+| Все сущности MQTT в HA — **unknown** | Short JSON без `.value` в шаблоне Discovery | Взять `https://github.com/Gfermoto/Vaillant/blob/main/mqtt-hassio.cfg` (обновлённый `value_template`) |
 | `invalid arguments` | Устаревшие флаги в 26.x | Убрать подозрительные опции, свериться с [wiki Run](https://github.com/john30/ebusd/wiki/2.-Run) |
 
 ---
@@ -51,17 +51,21 @@
 **Дополнение (UI):**
 
 - **Network / enhanced:** `ens:<IP_адаптера>:9999`
-- **Additional options** — см. [ebusd-addon-26.example.txt](https://github.com/Gfermoto/Vaillant/blob/main/ebusd-addon-26.example.txt)
+- **Additional options** — см. `https://github.com/Gfermoto/Vaillant/blob/main/ebusd-addon-26.example.txt`
 
 ---
 
 ## Файлы в репозитории Vaillant
 
+Ниже — **полные URL** (можно копировать как есть на Habr или в браузер):
+
 | Файл | Назначение |
 |------|------------|
-| [mqtt-hassio.cfg](https://github.com/Gfermoto/Vaillant/blob/main/mqtt-hassio.cfg) | Discovery для HA; шаблон значения для long/short JSON |
-| [ebusd-addon-26.example.txt](https://github.com/Gfermoto/Vaillant/blob/main/ebusd-addon-26.example.txt) | Пример строк для **commandline_options** (addon ≥26.1) |
-| [ebusd.txt](https://github.com/Gfermoto/Vaillant/blob/main/ebusd.txt) | Пример для **старого** формата дополнения (до 26.1) / Docker |
+| `https://github.com/Gfermoto/Vaillant/blob/main/mqtt-hassio.cfg` | Discovery для HA; шаблон значения для long/short JSON |
+| `https://github.com/Gfermoto/Vaillant/blob/main/ebusd-addon-26.example.txt` | Пример строк для **commandline_options** (addon ≥26.1) |
+| `https://github.com/Gfermoto/Vaillant/blob/main/ebusd.txt` | Пример для **старого** формата дополнения (до 26.1) / Docker |
+
+Кликабельные варианты (Markdown): [mqtt-hassio.cfg](https://github.com/Gfermoto/Vaillant/blob/main/mqtt-hassio.cfg) · [ebusd-addon-26.example.txt](https://github.com/Gfermoto/Vaillant/blob/main/ebusd-addon-26.example.txt) · [ebusd.txt](https://github.com/Gfermoto/Vaillant/blob/main/ebusd.txt)
 
 ---
 
