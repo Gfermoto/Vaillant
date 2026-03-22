@@ -58,6 +58,7 @@ Docker или дополнение HA; чаще всего уже есть в с
 - Закомментирован фильтр по имени сообщений: `(filter-name)`.
 - Включена публикация записываемых сообщений: `filter-direction = r|u|^w` — в HA попадает больше параметров.
 - В **`value_template`** для Discovery учтены и long JSON (`{"FlowTemp":{"value":42}}`), и short JSON (`{"FlowTemp":42}`) при `--mqttjson` — иначе сущности в HA могут быть **unknown** (ebusd 24+).
+- **`definition-retain = 1`** — после рестарта HA конфиги Discovery не теряются ([issue #5](https://github.com/Gfermoto/Vaillant/issues/5)).
 
 ### `08.bai.csv`
 
@@ -75,9 +76,15 @@ Docker или дополнение HA; чаще всего уже есть в с
 - Добавлены электрические (d.100–d.108): ступени нагрева, мощность, счётчик энергии.
 - В `08.bai.csv` добавлен HW-fallback `[HW=7503]` на случай, если по PROD котел не определится.
 - Закомментированы D.149, D.152–D.155 из мануала Vaillant (0020265768_01) — адреса eBUS пока не найдены.
+- **Приоритет опроса `r1`** для насоса, PWM, спроса отопления/ГВС, **HcPumpMode**, **HeatingSwitch**/**HwcSwitch** — чаще попадают в очередь poll (HA + `filter-seen`, [issue #5](https://github.com/Gfermoto/Vaillant/issues/5)).
+- **HcPumpMode:** в enum добавлено **`3=intermittent`** (котёл отдаёт `3` — без этого HA показывал `unknown`).
 
 Открытые вопросы: [ebusd_eloBLOCK.log](https://github.com/Gfermoto/Vaillant/blob/main/ebusd_eloBLOCK.log).  
 Помощь по поиску адресов **D.152/D.153** (программное ограничение мощности без реле) приветствуется. Метод **`ebusctl grab result`** для смены параметров **на дисплее котла** обычно не подходит: сравнивайте **полный дамп регистров до и после** изменения D.152/D.153 (скрипты read-all, сервисные команды B509; см. [issue #3](https://github.com/Gfermoto/Vaillant/issues/3)).
+
+### `bai.308523.inc` (fallback ecoTEC / generic)
+
+Файл из [john30/ebusd-configuration `archived/en/vaillant`](https://github.com/john30/ebusd-configuration/tree/master/archived/en/vaillant) с патчами [issue #5](https://github.com/Gfermoto/Vaillant/issues/5): **`r1`** на насос/спрос/переключатели, **HcPumpMode** `3=intermittent`. Кладите в `en/vaillant/` рядом с `08.bai.csv`. Используется по умолчанию при неузнавании котла (`!load` в конце `08.bai.csv`).
 
 ### `bai.0010015251.inc` (atmoTEC)
 
@@ -90,9 +97,7 @@ Docker или дополнение HA; чаще всего уже есть в с
 Файл нуждается в проверке и дополнении. Ошибки: [ebusd_atmoTEC.log](https://github.com/Gfermoto/Vaillant/blob/main/ebusd_atmoTEC.log). Большинство — параметры CO-датчика (e.04–e.19), на SW0407 недоступны и в конфиге закомментированы.  
 Помощь по предиктивным параметрам Pred\* и ServiceMode приветствуется.
 
-### `bai.308523.inc`
-
-Используется по умолчанию при неузнавании котла (общие сообщения). Второй конфиг выбирался по схожести **HW**; неподдерживаемые `d.xx` закомментированы с учётом **SW**.
+- **r1** и **HcPumpMode `3=intermittent`** — как в eloBLOCK ([issue #5](https://github.com/Gfermoto/Vaillant/issues/5)).
 
 ---
 

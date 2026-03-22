@@ -24,20 +24,22 @@ r,,StorageTempDesired,d.07 Storage setpoint,,,,"0400",,,temp,,,"Warm start tempe
 ##r,,ACRoomthermostat,d.08 Room thermostat 230 V,,,,"2A00",,,onoff,,,External controls heat demand (Clamp 3-4)
 # ExtFlowTempDesiredMin: returns ERR: invalid position on SW0407/HW0903
 #r,,ExtFlowTempDesiredMin,d.09 ext flowsetpoint,,,,"6E04",,,temp,,,minimum out of Kl.7 and eBus flow setpoint
-r,,WP,d.10 Central heating pump,,,,"4400",,,onoff,,,internal heating pump
-r,,extWP,d.11 external pump,,,,"3F00",,,onoff,,,External heating pump
+# r1: poll priority 1 — см. issue #5, wiki ebusd (опрос критичных полей чаще в очереди)
+r1,,WP,d.10 Central heating pump,,,,"4400",,,onoff,,,internal heating pump
+r1,,extWP,d.11 external pump,,,,"3F00",,,onoff,,,External heating pump
 r,,Storageloadpump,d.12 storage load pump,,,,"9E00",,,percent0,,,tank load pump demand
-r,,CirPump,d.13 Circulation pump,,,,"7B00",,,onoff,,,Hot water circulation pump (via external module)
-r;wi,,PumpPowerDesired,d.14 Desired heating pump power,,,,A100,,,UCH,0=auto;1=53;2=60;3=70;4=85;5=100,%,PWM-Desired central heating pump power,,,
-r,,WPPWMPower,d.15 WP_PWMPower_DK,,,,"7300",,,UCH,,,actual PWM-Powerrate of electronic-pump
+r1,,CirPump,d.13 Circulation pump,,,,"7B00",,,onoff,,,Hot water circulation pump (via external module)
+r1;wi,,PumpPowerDesired,d.14 Desired heating pump power,,,,A100,,,UCH,0=auto;1=53;2=60;3=70;4=85;5=100,%,PWM-Desired central heating pump power,,,
+r1,,WPPWMPower,d.15 WP_PWMPower_DK,,,,"7300",,,UCH,,,actual PWM-Powerrate of electronic-pump
 r1,,DCRoomthermostat,d.16 room thermostat 24 V,,,,0E00,,,onoff,,,External controls heat demand (Clamp 3'-4')
 r;wi,,ReturnRegulation,d.17 Return control,,,,"B300",,,onoff,,,Activation of the return control,,,
-r;wi,,HcPumpMode,d.18 CH pump mode,,,,"B700",,,UCH,0=post run;1=permanent;2=winter,,Pump mode for central heating,,,
+# HcPumpMode UCH=3: intermittent (issue #5 — корректный enum в HA MQTT Discovery)
+r1;wi,,HcPumpMode,d.18 CH pump mode,,,,"B700",,,UCH,0=post run;1=permanent;2=winter;3=intermittent,,Pump mode for central heating,,,
 #r;wi,,,d.19
 r;wi,,HwcTempMax,d.20 Maximum DHW temperature,,,,"D900",,,temp,,,Max. Speichersollwert. Limits the maximum adjustment range of the potentiometer (right stop).,,,
 r,,Warmstart,d.21 Warmstart function,,,,5B00,,,onoff,,,Warmstart function : this parameter indicate if the function is enabled and allowed
-r,,HwcDemand,d.22 DHW demand,,,,"5800",,,yesno,,,domestic hot water (tapping or tank contact) demand
-r,,HeatingSwitch,d.23 operation mode,,,,"F203",,,onoff,,,Wintermode active
+r1,,HwcDemand,d.22 DHW demand,,,,"5800",,,yesno,,,domestic hot water (tapping or tank contact) demand
+r1,,HeatingSwitch,d.23 operation mode,,,,"F203",,,onoff,,,Wintermode active
 r,,SourcePressure,d.24 AirPressure_DK,,,,"FF00",,,UIN,,Pa,value of airpressure-sensor
 r,,StoragereleaseClock,d.25 DHW demand enabled,,,,"4704",,,yesno,,,hot water release (tank storage) via eBus Control
 r;wi,,AccessoriesOne,d.27 Accessory relay 1,,,,"B900",,,UCH,1=circulationpump;2=extheatingpump;3=storagechargingpump;4=fluegasflapextractorhood;5=externalgasvalve;6=externalerrormessage;7=solarpump;8=remotecontrol,,Function of accessory relay 1,,,
@@ -190,7 +192,7 @@ r,,ExternGasvalve,ExternGasvalve_DK,,,,"E400",,,onoff,,,external gasvalve activa
 #r,,FlowSetPotmeter,FlowSetPotmeter,,,,"F003",,,temp,,,flow setpoint potentiometer
 # HwcSetPotmeter: returns ERR: invalid position on SW0407/HW0903
 #r,,HwcSetPotmeter,DHWSetPotmeter,,,,"F103",,,temp,,,DHW setpoint potentiometer
-r,,HwcSwitch,DHWSwitch,,,,"F303",,,onoff,,,DHW on/off
+r1,,HwcSwitch,DHWSwitch,,,,"F303",,,onoff,,,DHW on/off
 r,,ProductionByte,ProductionByte,,,,"3E04",,,UCH,,,
 r,,SerialNumber,SerialNumber,,,,"3F04",,,HEX:8,,,serial number of AI
 # ##### dia level 2 #####,,,,,,,,,,,,,

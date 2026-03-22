@@ -2,7 +2,7 @@
 --scanconfig=full
 --log=all:notice
 --mqtttopic=ebusd
---pollinterval=30
+--pollinterval=5
 --latency=15
 --sendretries=5
 --scanretries=10

@@ -14,14 +14,15 @@ r;wi,,WPPostrunTime,d.01 central heating overruntime,,,,6400,,,minutes0,,,water 
 r1,,StorageTemp,d.04 Storage temperature,,,,1700,,,tempsensor,,,Current temperature for warm start sensor (combi boiler) / Current storage tank sensor (system boiler only)
 r,,FlowTempDesired,d.05 flow/return setpoint,,,,3900,,,temp,,,Flow temperature target value or return target value when return regulation is set
 r,,StorageTempDesired,d.07 Storage setpoint,,,,0400,,,temp,,,"Warm start temperature value (combination boiler plus only), Storage temperature target value (system boiler only)"
-r,,WP,d.10 Central heating pump,,,,4400,,,onoff,,,internal heating pump
-r,,extWP,d.11 external pump,,,,3F00,,,onoff,,,External heating pump
-r,,CirPump,d.13 Circulation pump,,,,7B00,,,onoff,,,Hot water circulation pump (via external module)
-r;wi,,PumpPowerDesired,d.14 Desired heating pump power,,,,A100,,,UCH,0=auto;1=53;2=60;3=70;4=85;5=100,%,PWM-Desired central heating pump power,,,
-r,,WPPWMPower,d.15 WP_PWMPower_DK,,,,"7300",,,UCH,,,actual PWM-Powerrate of electronic-pump
+# r1: poll priority 1 — чаще в очереди опроса (HA + filter-seen); см. issue #5, wiki ebusd
+r1,,WP,d.10 Central heating pump,,,,4400,,,onoff,,,internal heating pump
+r1,,extWP,d.11 external pump,,,,3F00,,,onoff,,,External heating pump
+r1,,CirPump,d.13 Circulation pump,,,,7B00,,,onoff,,,Hot water circulation pump (via external module)
+r1;wi,,PumpPowerDesired,d.14 Desired heating pump power,,,,A100,,,UCH,0=auto;1=53;2=60;3=70;4=85;5=100,%,PWM-Desired central heating pump power,,,
+r1,,WPPWMPower,d.15 WP_PWMPower_DK,,,,"7300",,,UCH,,,actual PWM-Powerrate of electronic-pump
 r1,,DCRoomthermostat,d.16 room thermostat 24 V,,,,0E00,,,onoff,,,External controls heat demand (Clamp 3'-4')
-r,,HwcDemand,d.22 DHW demand,,,,5800,,,yesno,,,domestic hot water (tapping or tank contact) demand
-r,,HeatingDemand,d.23 Heating demand,,,,4000,,,yesno,,,Heating demand
+r1,,HwcDemand,d.22 DHW demand,,,,5800,,,yesno,,,domestic hot water (tapping or tank contact) demand
+r1,,HeatingDemand,d.23 Heating demand,,,,4000,,,yesno,,,Heating demand
 r,,StoragereleaseClock,d.25 DHW demand enabled,,,,7100,,,yesno,,,hot water release (tank storage) via eBus Control
 r,,PrimaryCircuitFlowRate,d.29 PrimaryCircuitFlowRate_DK,,,,FB00,,,uin100,,,primary circuit water flow rate
 r1,,PositionValveSet,d.35 Position TWV,,,,5400,,,UCH,,,"Position of diverter valve; 100 = DHW, 0 = heating, 40 = middle position"
@@ -29,7 +30,8 @@ r1,,FlowTemp,d.40 TFT_DK,,,,1800,,,tempsensor,,,flow temperature
 r,,OutdoorstempSensor,d.47 Temp outside,,,,7600,,,tempsensor,,,Outside temperature (uncorrected value)
 
 # ##### dia level 2 #####,,,,,,,,,,,,,
-r;wi,,HcPumpMode,d.18 CH pump mode,,,,B700,,,UCH,0=post run;1=permanent;2=winter,,Pump mode
+# HcPumpMode: на части аппаратов котёл отдаёт UCH=3 — добавлено 3=intermittent (issue #5, HA enum)
+r1;wi,,HcPumpMode,d.18 CH pump mode,,,,B700,,,UCH,0=post run;1=permanent;2=winter;3=intermittent,,Pump mode
 r;wi,,SecondPumpMode,d.19 Mode of 2 speed pump,,,,A000,,,UCH,,,"Operating mode of the two-stage heating pump; 0: burner mode=2/pre/post-run=1; 1: CH+post-run=1/DHW=2; 2: as 1 but speed in CH depends on partload (default); 3: always stage 2"
 r;wi,,HwcTempMax,d.20 Max value tanksetpoint,,,,D900,,,temp,,,Adjustment of maximum tank setpoint range (maximum endposition of potmeter)
 r,,DeactivationsTemplimiter,d.60 Number STL cut off,,,,2000,,,UCH,,,Number of safety temperature limiter cut offs
@@ -138,8 +140,8 @@ r,,DCFTimeDate,DCF_TimeDate_DK,,,,E500,,,HEX:7,,,DCF Time / date stamp
 #r,,FlowSetPotmeter,FlowSetPotmeter,,,,F003,,,temp,,,flow setpoint potentiometer
 # HwcSetPotmeter: DHW-specific, returns ERR: invalid position on eloBLOCK
 #r,,HwcSetPotmeter,DHWSetPotmeter,,,,F103,,,temp,,,DHW setpoint potentiometer
-r;w,,HeatingSwitch,Heating Switch,,,,F203,,,onoff,,,Winter mode active
-r;w,,HwcSwitch,DHWSwitch,,,,F303,,,onoff,,,DHW on/off
+r1;w,,HeatingSwitch,Heating Switch,,,,F203,,,onoff,,,Winter mode active
+r1;w,,HwcSwitch,DHWSwitch,,,,F303,,,onoff,,,DHW on/off
 r,,ProductionByte,ProductionByte,,,,3E04,,,UCH,,,
 
 # ##### Additional electrical parameters (eloBLOCK specific) #####

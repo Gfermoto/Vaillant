@@ -54,8 +54,8 @@ services:
       EBUSD_SCANRETRIES: 5
       # Prefer LANG in multilingual configuration files
       #EBUSD_CONFIGLANG: "en"
-      # Poll for data every SEC seconds (recommended: 30 for normal monitoring)
-      EBUSD_POLLINTERVAL: 30
+      # Poll for data every SEC seconds (default ebusd=5; 30 = реже нагрузка на шину, но дольше полный цикл poll — см. HA_ADDON_EBUSD_26.md / issue #5)
+      EBUSD_POLLINTERVAL: 5
       # Use CA FILE for checking certificates (uses defaults, "#" for insecure)
       #EBUSD_CAFILE: "/path/to/cafile"
       # Use CA PATH for checking certificates (uses defaults)

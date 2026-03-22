@@ -43,7 +43,7 @@
         08.bai.csv
         bai.0010023658.inc
         bai.0010015251.inc
-        bai.308523.inc      # из upstream, если нужен fallback в 08.bai
+        bai.308523.inc      # копия из репозитория Vaillant или raw archived/en/vaillant
         errors.inc
         hcmode.inc
 ```
@@ -64,8 +64,40 @@
 | `https://github.com/Gfermoto/Vaillant/blob/main/mqtt-hassio.cfg` | Discovery для HA; шаблон значения для long/short JSON |
 | `https://github.com/Gfermoto/Vaillant/blob/main/ebusd-addon-26.example.txt` | Пример строк для **commandline_options** (addon ≥26.1) |
 | `https://github.com/Gfermoto/Vaillant/blob/main/ebusd.txt` | Пример для **старого** формата дополнения (до 26.1) / Docker |
+| `https://github.com/Gfermoto/Vaillant/blob/main/bai.308523.inc` | Fallback **ecoTEC** / generic BAI (из `archived/en/vaillant` + патчи issue #5) |
 
-Кликабельные варианты (Markdown): [mqtt-hassio.cfg](https://github.com/Gfermoto/Vaillant/blob/main/mqtt-hassio.cfg) · [ebusd-addon-26.example.txt](https://github.com/Gfermoto/Vaillant/blob/main/ebusd-addon-26.example.txt) · [ebusd.txt](https://github.com/Gfermoto/Vaillant/blob/main/ebusd.txt)
+Кликабельные варианты (Markdown): [mqtt-hassio.cfg](https://github.com/Gfermoto/Vaillant/blob/main/mqtt-hassio.cfg) · [ebusd-addon-26.example.txt](https://github.com/Gfermoto/Vaillant/blob/main/ebusd-addon-26.example.txt) · [ebusd.txt](https://github.com/Gfermoto/Vaillant/blob/main/ebusd.txt) · [bai.308523.inc](https://github.com/Gfermoto/Vaillant/blob/main/bai.308523.inc)
+
+---
+
+## john30/ebusd-configuration: ветка `archived/en`
+
+Актуальные CSV для локального `--configpath` лежат в **`archived/en/`**, не в корне репозитория. Пример прямой ссылки на тот же fallback, что в нашем `bai.308523.inc`:
+
+`https://raw.githubusercontent.com/john30/ebusd-configuration/master/archived/en/vaillant/bai.308523.inc`
+
+Старые пути без `archived/en` часто дают **404**.
+
+---
+
+## Опрос шины: `--pollinterval`
+
+По [wiki ebusd](https://github.com/john30/ebusd/wiki/4.-Configuration) и [issue #458](https://github.com/john30/ebusd/issues/458): префиксы **`r1`…`r9`** задают **приоритет** сообщений в очереди poll (не умножают интервал). При большом числе сообщений и **`--pollinterval=30`** полный проход очереди может занимать **десятки минут**.
+
+- В примере [ebusd-addon-26.example.txt](https://github.com/Gfermoto/Vaillant/blob/main/ebusd-addon-26.example.txt) стоит **`--pollinterval=5`** (близко к умолчанию ebusd).
+- **`--pollinterval=30`** имеет смысл на очень шумной шине; иначе в HA долго **`unknown`** на редко опрашиваемых полях.
+
+В **`bai.0010023658.inc`** / **`bai.0010015251.inc`** / **`bai.308523.inc`** для насоса, спроса и переключателей выставлен приоритет **`r1`** ([issue #5](https://github.com/Gfermoto/Vaillant/issues/5)).
+
+---
+
+## MQTT Discovery: retain
+
+В [mqtt-hassio.cfg](https://github.com/Gfermoto/Vaillant/blob/main/mqtt-hassio.cfg) включено **`definition-retain = 1`**: после перезапуска Home Assistant брокер отдаёт последние **config**-сообщения Discovery — сущности не «пропадают» из‑за порядка старта.
+
+Опционально для **значений** топиков: флаг ebusd **`--mqttretain`** (компромисс: при обрыве шины в MQTT могут остаться устаревшие значения).
+
+Эксперименты с **`type_map-string`** и отключением **`filter-non-field`** в `mqtt-hassio.cfg` могут снова дать **`unknown`** у части сущностей; «тихий» профиль — как в текущем файле репозитория.
 
 ---
 
@@ -75,4 +107,4 @@
 
 ---
 
-*Обсуждение и дополнения: [issue #4](https://github.com/Gfermoto/Vaillant/issues/4).*
+*Обсуждение: [issue #4](https://github.com/Gfermoto/Vaillant/issues/4), [issue #5](https://github.com/Gfermoto/Vaillant/issues/5) (r1, HcPumpMode, retain, pollinterval, `bai.308523.inc`).*
